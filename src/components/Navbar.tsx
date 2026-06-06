@@ -21,7 +21,7 @@ export function Navbar() {
   }, []);
 
   const navItems = [
-    { label: t.nav.home, href: '#' },
+    { label: t.nav.home, href: '#top' },
     { label: t.nav.services, href: '#leistungen' },
     { label: t.nav.about, href: '#ueber-uns' },
     { label: t.nav.references, href: '#referenzen' },
