@@ -21,7 +21,7 @@ export function Navbar() {
   }, []);
 
   const navItems = [
-    { label: t.nav.home, href: '#top' },
+    { label: t.nav.home, href: '/' },
     { label: t.nav.services, href: '#leistungen' },
     { label: t.nav.about, href: '#ueber-uns' },
     { label: t.nav.references, href: '#referenzen' },
@@ -34,7 +34,7 @@ export function Navbar() {
       scrolled ? 'bg-white/90 backdrop-blur-md border-black/5 py-3 md:py-4' : 'bg-transparent border-transparent py-4 md:py-6'
     }`}>
       <div className="flex justify-between items-center px-4 md:px-8 max-w-7xl mx-auto w-full animate-fade-rise">
-        <a href="#top" aria-label="Home" onClick={() => setMobileMenuOpen(false)} className="font-serif text-2xl md:text-3xl tracking-tight text-[#000000]">
+        <a href="/" aria-label="Home" onClick={() => setMobileMenuOpen(false)} className="font-serif text-2xl md:text-3xl tracking-tight text-[#000000]">
           Putzen<sup className="text-[10px] md:text-xs align-super relative -top-2 md:-top-3 ml-px font-sans font-normal">&reg;</sup>
         </a>
         
