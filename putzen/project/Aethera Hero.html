@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aethera®</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<style>
+  /* ── /src/styles/fonts.css ───────────────────────── */
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap');
+
+  /* ── Reset / base ─────────────────────────────────── */
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  html, body { margin: 0; padding: 0; background: #FFFFFF; color: #000000; }
+  body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+  ::selection { background: #000; color: #fff; }
+
+  /* ── /src/styles/theme.css ────────────────────────── */
+  @keyframes fade-rise {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-rise         { animation: fade-rise 0.8s ease-out both; }
+  .animate-fade-rise-delay   { animation: fade-rise 0.8s ease-out 0.2s both; }
+  .animate-fade-rise-delay-2 { animation: fade-rise 0.8s ease-out 0.4s both; }
+
+  /* ── Display ──────────────────────────────────────── */
+  .display {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -2.46px;
+    color: #000000;
+  }
+  .display em {
+    font-style: italic;
+    color: #6F6F6F;
+  }
+
+  .logo {
+    font-family: 'Instrument Serif', serif;
+    color: #000000;
+    letter-spacing: -0.02em;
+  }
+
+  .nav-link {
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    background: #000000;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 9999px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    text-decoration: none;
+  }
+  .btn:hover { transform: scale(1.03); }
+  .btn-sm { padding: 10px 24px; font-size: 14px; }
+  .btn-lg { padding: 20px 56px; font-size: 16px; }
+
+  /* ── Video frame ──────────────────────────────────── */
+  .video-frame {
+    position: absolute;
+    top: 300px;
+    inset: auto 0 0 0;
+    overflow: hidden;
+    z-index: 0;
+    background: #FFFFFF;
+  }
+  .video-frame video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0;
+    transition: none; /* fades are driven by raf JS */
+  }
+  .video-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0) 18%, rgba(255,255,255,0) 72%, #FFFFFF 100%);
+  }
+</style>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          display: ['Instrument Serif', 'serif'],
+          body: ['Inter', 'sans-serif'],
+        },
+        colors: {
+          background: '#FFFFFF',
+        },
+      },
+    },
+  };
+</script>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+const { useEffect, useRef } = React;
+
+const VIDEO_SRC = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_083109_283f3553-e28f-428b-a723-d639c617eb2b.mp4';
+
+const NAV_ITEMS = [
+  { label: 'Home',        active: true },
+  { label: 'Leistungen' },
+  { label: 'Über uns' },
+  { label: 'Referenzen' },
+  { label: 'Kontakt' },
+];
+
+// ── Video with manual fade-in / fade-out seamless loop ────
+function HeroVideo() {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const FADE = 0.5; // seconds
+    let rafId = null;
+    let resetTimer = null;
+    let stopped = false;
+
+    const tick = () => {
+      if (stopped) return;
+      const d = video.duration;
+      const t = video.currentTime;
+      if (d && !isNaN(d)) {
+        let op = 1;
+        if (t < FADE) {
+          op = Math.max(0, Math.min(1, t / FADE));
+        } else if (t > d - FADE) {
+          op = Math.max(0, Math.min(1, (d - t) / FADE));
+        }
+        video.style.opacity = String(op);
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+
+    const onEnded = () => {
+      video.style.opacity = '0';
+      resetTimer = setTimeout(() => {
+        video.currentTime = 0;
+        video.play().catch(() => {});
+      }, 100);
+    };
+
+    const onLoaded = () => {
+      video.play().catch(() => {});
+      rafId = requestAnimationFrame(tick);
+    };
+
+    video.addEventListener('loadedmetadata', onLoaded);
+    video.addEventListener('ended', onEnded);
+    if (video.readyState >= 1) onLoaded();
+
+    return () => {
+      stopped = true;
+      if (rafId) cancelAnimationFrame(rafId);
+      if (resetTimer) clearTimeout(resetTimer);
+      video.removeEventListener('loadedmetadata', onLoaded);
+      video.removeEventListener('ended', onEnded);
+    };
+  }, []);
+
+  return (
+    <video
+      ref={videoRef}
+      src={VIDEO_SRC}
+      muted
+      playsInline
+      preload="auto"
+      crossOrigin="anonymous"
+    />
+  );
+}
+
+function App() {
+  return (
+    <div className="relative min-h-screen w-full overflow-hidden bg-background">
+
+      {/* ── Background video layer (z-0) ──────────── */}
+      <div className="video-frame">
+        <HeroVideo />
+        <div className="video-overlay"></div>
+      </div>
+
+      {/* ── Nav (z-10) ─────────────────────────────── */}
+      <nav className="relative z-10 max-w-7xl mx-auto flex justify-between items-center px-8 py-6 animate-fade-rise">
+        <a href="#" className="logo text-3xl tracking-tight">
+          Putzen<sup className="text-xs align-super relative -top-3 ml-px font-body font-normal">®</sup>
+        </a>
+
+        <div className="hidden md:flex items-center gap-8">
+          {NAV_ITEMS.map(item => (
+            <a
+              key={item.label}
+              href="#"
+              className="nav-link"
+              style={{ color: item.active ? '#000000' : '#6F6F6F' }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = '#000000'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = item.active ? '#000000' : '#6F6F6F'; }}
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
+
+        <a href="#" className="btn btn-sm">Offerte anfragen</a>
+      </nav>
+
+      {/* ── Hero (z-10) ────────────────────────────── */}
+      <section
+        className="relative z-10 flex flex-col items-center justify-center text-center px-6 pb-40"
+        style={{ paddingTop: 'calc(8rem - 75px)' }}
+      >
+        <h1 className="display text-5xl sm:text-7xl md:text-8xl max-w-7xl font-normal animate-fade-rise">
+          Hinter jedem <em>Glanz,</em> echte <em>Schweizer Sorgfalt.</em>
+        </h1>
+
+        <p
+          className="text-base sm:text-lg max-w-2xl mt-20 leading-relaxed animate-fade-rise-delay"
+          style={{ color: '#6F6F6F' }}
+        >
+          Wir reinigen Wohnungen, Büros und Geschäftsräume in Bern und Umgebung — mit eigenem Team, ökologischen Mitteln und der Sorgfalt, die man Tag für Tag wirklich sieht.
+        </p>
+
+        <a href="#" className="btn btn-lg mt-12 animate-fade-rise-delay-2" style={{ padding: '20px 56px' }}>
+          Termin buchen
+        </a>
+      </section>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+
+</body>
+</html>

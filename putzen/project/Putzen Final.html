@@ -1,0 +1,1917 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Putzen® — Reinigungsdienst Bern</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap');
+
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  html, body { margin: 0; padding: 0; background: #FFFFFF; color: #000000; }
+  body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+  html { scroll-behavior: smooth; }
+  ::selection { background: #000; color: #fff; }
+
+  /* ── Animations ───────────────────────────────────── */
+  @keyframes fade-rise {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-rise         { animation: fade-rise 0.8s ease-out both; }
+  .animate-fade-rise-delay   { animation: fade-rise 0.8s ease-out 0.2s both; }
+  .animate-fade-rise-delay-2 { animation: fade-rise 0.8s ease-out 0.4s both; }
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.9s ease, transform 0.9s ease; }
+  .reveal.is-visible { opacity: 1; transform: none; }
+
+  /* ── Display ──────────────────────────────────────── */
+  .display {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -2.46px;
+    color: #000000;
+  }
+  .display em { font-style: italic; color: #6F6F6F; }
+
+  .display-md {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    color: #000000;
+  }
+  .display-md em { font-style: italic; color: #6F6F6F; }
+
+  .logo { font-family: 'Instrument Serif', serif; color: #000000; letter-spacing: -0.02em; }
+
+  .nav-link { font-size: 14px; text-decoration: none; transition: color 0.2s ease; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #000000;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 9999px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+    text-decoration: none;
+  }
+  .btn:hover { transform: scale(1.03); }
+  .btn-sm { padding: 10px 22px; font-size: 14px; }
+  .btn-md { padding: 14px 28px; font-size: 14px; }
+  .btn-lg { padding: 20px 40px; font-size: 16px; }
+  .btn-ghost {
+    background: transparent;
+    color: #000;
+    border: 1px solid rgba(0,0,0,0.15);
+  }
+  .btn-ghost:hover { background: #000; color: #fff; border-color: #000; }
+
+  /* ── Video frame for hero ─────────────────────────── */
+  .page-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    background: #FFFFFF;
+  }
+  .page-bg video {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: bottom;
+    display: block;
+    opacity: 0;
+    transition: none;
+  }
+  .page-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(243,241,231,0.25) 50%, rgba(243,241,231,0.55) 100%);
+  }
+
+  .frost-light {
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+  }
+  .frost-cream {
+    background: rgba(243, 241, 231, 0.82);
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+  }
+
+  .video-frame {
+    position: absolute;
+    top: 300px;
+    inset: auto 0 0 0;
+    overflow: hidden;
+    z-index: 0;
+    background: transparent;
+  }
+  .video-frame video {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0;
+    transition: none;
+  }
+  .video-overlay {
+    position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    background: linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0) 18%, rgba(255,255,255,0) 72%, #FFFFFF 100%);
+  }
+
+  /* ── Eyebrows / labels ───────────────────────────── */
+  .eyebrow {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: #6F6F6F;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow .dot {
+    width: 6px; height: 6px;
+    border-radius: 9999px;
+    background: #C49A2B;
+  }
+
+  /* ── Service cards ───────────────────────────────── */
+  .svc-card {
+    position: relative;
+    padding: 36px 30px 28px;
+    background: #FAF8F3;
+    border-radius: 22px;
+    border: 1px solid rgba(0,0,0,0.06);
+    transition: transform 0.4s ease, background 0.4s ease;
+    overflow: hidden;
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .svc-card:hover { transform: translateY(-4px); }
+  .svc-card.dark { background: #0F1A11; color: #fff; }
+  .svc-card.dark .eyebrow { color: rgba(255,255,255,0.55); }
+  .svc-card.dark .arrow-link { border-color: rgba(255,255,255,0.25); color: #fff; }
+  .svc-card h3 {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    line-height: 1.04;
+    font-size: 32px;
+    letter-spacing: -0.01em;
+    color: inherit;
+  }
+  .svc-card p {
+    font-size: 14px;
+    line-height: 1.55;
+    color: #6F6F6F;
+    max-width: 360px;
+  }
+  .svc-card.dark p { color: rgba(255,255,255,0.7); }
+  .svc-card .price-row {
+    margin-top: auto;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-top: 24px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+  }
+  .svc-card.dark .price-row { border-color: rgba(255,255,255,0.12); }
+  .svc-card .price-row .from {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #6F6F6F;
+    letter-spacing: 0.04em;
+  }
+  .svc-card.dark .price-row .from { color: rgba(255,255,255,0.55); }
+  .svc-card .price-row .amount {
+    font-family: 'Instrument Serif', serif;
+    font-size: 30px;
+    line-height: 1;
+  }
+  .arrow-link {
+    width: 38px; height: 38px;
+    border-radius: 9999px;
+    border: 1px solid rgba(0,0,0,0.18);
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+    color: #000;
+    transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+  }
+  .svc-card:hover .arrow-link { transform: rotate(-45deg); background: #000; color: #fff; border-color: #000; }
+  .svc-card.dark:hover .arrow-link { background: #fff; color: #000; border-color: #fff; }
+  .badge {
+    position: absolute;
+    top: 22px; right: 22px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    background: #C49A2B;
+    color: #000;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── Stats ───────────────────────────────────────── */
+  .stats-section {
+    color: #0F1A11;
+    background: transparent;
+  }
+  .stats-section .eyebrow { color: #6B7268; }
+  .stat-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(64px, 8vw, 120px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: #0F1A11;
+  }
+  .stat-num em { font-style: italic; color: #2E7A4F; }
+
+  /* ── Process step ────────────────────────────────── */
+  .step {
+    padding-top: 28px;
+    border-top: 1px solid rgba(0,0,0,0.12);
+  }
+  .step h4 {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.05;
+    margin: 14px 0 14px;
+    letter-spacing: -0.01em;
+  }
+
+  /* ── Pricing ─────────────────────────────────────── */
+  .pkg {
+    padding: 36px 30px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: transform 0.3s ease;
+  }
+  .pkg:hover { transform: translateY(-4px); }
+  .pkg.featured {
+    background: #0F1A11;
+    color: #fff;
+    border-color: #0F1A11;
+  }
+  .pkg-name {
+    font-family: 'Instrument Serif', serif;
+    font-size: 36px;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  .pkg-name em { font-style: italic; color: #6F6F6F; }
+  .pkg.featured .pkg-name em { color: #C49A2B; }
+  .pkg-desc { font-size: 13px; color: #6F6F6F; line-height: 1.5; min-height: 40px; }
+  .pkg.featured .pkg-desc { color: rgba(255,255,255,0.6); }
+  .pkg-price {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 14px 0;
+    border-top: 1px dashed rgba(0,0,0,0.15);
+    border-bottom: 1px dashed rgba(0,0,0,0.15);
+  }
+  .pkg.featured .pkg-price { border-color: rgba(255,255,255,0.18); }
+  .pkg-price .currency { font-family: 'Geist Mono', monospace; font-size: 13px; color: #6F6F6F; }
+  .pkg.featured .pkg-price .currency { color: rgba(255,255,255,0.55); }
+  .pkg-price .amount {
+    font-family: 'Instrument Serif', serif;
+    font-size: 56px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .pkg-price .per { font-family: 'Geist Mono', monospace; font-size: 11px; color: #6F6F6F; margin-left: 4px; }
+  .pkg.featured .pkg-price .per { color: rgba(255,255,255,0.55); }
+  .pkg ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .pkg li { font-size: 13px; line-height: 1.45; display: flex; gap: 10px; align-items: flex-start; }
+  .pkg li::before { content: "+"; color: #2E7A4F; font-family: 'Geist Mono', monospace; font-size: 13px; line-height: 1.45; }
+  .pkg.featured li::before { color: #C49A2B; }
+  .pkg li.x::before { content: "−"; color: #6F6F6F; opacity: 0.5; }
+  .pkg li.x { color: #6F6F6F; opacity: 0.6; }
+  .pkg.featured li.x { color: rgba(255,255,255,0.4); }
+  .pkg .pkg-cta { justify-content: center; margin-top: 8px; }
+  .pkg.featured .pkg-cta { background: #C49A2B; color: #0F1A11; }
+  .pkg.featured .pkg-cta:hover { background: #fff; color: #0F1A11; }
+
+  /* ── Testimonials ────────────────────────────────── */
+  .quote-mark {
+    font-family: 'Instrument Serif', serif;
+    font-size: 120px;
+    color: #C49A2B;
+    line-height: 0.4;
+    height: 40px;
+  }
+  .testi-card {
+    background: #FAF8F3;
+    border-radius: 22px;
+    padding: 32px;
+    border: 1px solid rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .avatar {
+    width: 44px; height: 44px;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #C49A2B, #6B7268);
+    flex-shrink: 0;
+  }
+
+  /* ── FAQ ─────────────────────────────────────────── */
+  details.faq {
+    border-bottom: 1px solid rgba(0,0,0,0.12);
+    padding: 22px 0;
+    cursor: pointer;
+  }
+  details.faq summary {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 32px 1fr 32px;
+    gap: 16px;
+    align-items: start;
+  }
+  details.faq summary::-webkit-details-marker { display: none; }
+  details.faq .num {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: #6F6F6F;
+    padding-top: 6px;
+  }
+  details.faq h5 {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.25;
+    letter-spacing: -0.005em;
+    margin: 0;
+  }
+  details.faq .toggle {
+    width: 32px; height: 32px;
+    border-radius: 9999px;
+    border: 1px solid rgba(0,0,0,0.18);
+    display: grid;
+    place-items: center;
+    font-size: 16px;
+    transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+  }
+  details.faq[open] .toggle { transform: rotate(45deg); background: #000; color: #fff; border-color: #000; }
+  details.faq .answer {
+    margin-top: 14px;
+    padding-left: 48px;
+    padding-right: 40px;
+    font-size: 15px;
+    line-height: 1.55;
+    color: #4A4F4B;
+  }
+
+  /* ── Booking ─────────────────────────────────────── */
+  .booking-section {
+    color: #0F1A11;
+    background: transparent;
+  }
+  .booking-section .eyebrow { color: #6B7268; }
+  .booking-form {
+    background: #fff;
+    color: #000;
+    padding: 32px;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: #6F6F6F;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .field input, .field select {
+    padding: 12px 14px;
+    border: 1px solid rgba(0,0,0,0.15);
+    background: #fff;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 14px;
+    color: #000;
+  }
+  .field input:focus, .field select:focus {
+    outline: 2px solid #000;
+    outline-offset: -1px;
+    border-color: transparent;
+  }
+
+  /* ── Footer ─────────────────────────────────────── */
+  footer { background: #000; color: #fff; }
+  .marquee {
+    overflow: hidden;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    background: #000;
+  }
+  .marquee-track {
+    display: inline-flex;
+    gap: 56px;
+    padding: 16px 0;
+    animation: scroll 38s linear infinite;
+    white-space: nowrap;
+  }
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .marquee-item {
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .marquee-item .dot { width: 5px; height: 5px; border-radius: 9999px; background: #C49A2B; }
+  .wordmark {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: clamp(120px, 22vw, 360px);
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    color: rgba(255,255,255,0.06);
+    text-align: center;
+    user-select: none;
+    margin: 64px 0 32px;
+  }
+  .wordmark em { font-style: italic; color: rgba(255,255,255,0.04); }
+
+  /* ─────────────────────────────────────────────── */
+  /* Phase 2: Boost — sticky nav, trust bar, pullquote, team, calc, fab */
+  /* ─────────────────────────────────────────────── */
+
+  /* Sticky nav state */
+  .nav-wrap {
+    position: sticky;
+    top: 12px;
+    z-index: 50;
+    margin: 0 auto;
+    transition: padding 0.3s ease;
+  }
+  .nav-inner {
+    transition: background 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease, max-width 0.3s ease, padding 0.3s ease, border-radius 0.3s ease, border-color 0.3s ease;
+    border-radius: 9999px;
+    border: 1px solid transparent;
+  }
+  .nav-wrap.scrolled .nav-inner {
+    background: rgba(255,255,255,0.78);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    box-shadow: 0 8px 30px rgba(15,26,17,0.08);
+    border-color: rgba(15,26,17,0.06);
+    padding: 10px 18px !important;
+  }
+
+  /* Trust bar */
+  .trust-bar { padding: 28px 0; border-top: 1px solid rgba(15,26,17,0.10); border-bottom: 1px solid rgba(15,26,17,0.10); }
+  .trust-bar .label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: #6F6F6F;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+  .trust-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #4A4F4B;
+    transition: color 0.25s ease, transform 0.25s ease;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .trust-logo:hover { color: #0F1A11; transform: translateY(-1px); }
+  .trust-logo svg { width: 22px; height: 22px; }
+
+  /* Pull-quote */
+  .pullquote-section { padding: 80px 0 100px; }
+  .pullquote {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.04;
+    letter-spacing: -1.5px;
+    color: #0F1A11;
+    font-size: clamp(40px, 6vw, 92px);
+    text-align: center;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .pullquote .accent { color: #2E7A4F; }
+  .pullquote-meta {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: #6F6F6F;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    margin-top: 32px;
+    text-align: center;
+  }
+
+  /* Team */
+  .team-card {
+    background: rgba(255,255,255,0.65);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(15,26,17,0.08);
+    border-radius: 22px;
+    padding: 24px;
+    transition: transform 0.3s ease, background 0.3s ease;
+  }
+  .team-card:hover { transform: translateY(-3px); background: rgba(255,255,255,0.85); }
+  .team-photo {
+    width: 100%;
+    aspect-ratio: 4/5;
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #c8c0a5, #6B7268);
+    margin-bottom: 18px;
+    position: relative;
+  }
+  .team-photo .initial {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 64px;
+    color: rgba(255,255,255,0.7);
+  }
+  .team-name {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 28px;
+    line-height: 1;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .team-role {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: #6F6F6F;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+  }
+  .team-bio { font-size: 13px; line-height: 1.5; color: #4A4F4B; }
+
+  /* Calculator */
+  .calculator {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(15,26,17,0.08);
+    border-radius: 28px;
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+    align-items: center;
+  }
+  @media (max-width: 760px) { .calculator { grid-template-columns: 1fr; padding: 28px; } }
+  .calc-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .calc-group label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #6F6F6F;
+  }
+  .calc-options {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .calc-option {
+    padding: 10px 16px;
+    border-radius: 9999px;
+    border: 1px solid rgba(15,26,17,0.15);
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #0F1A11;
+  }
+  .calc-option:hover { border-color: #0F1A11; }
+  .calc-option.active { background: #0F1A11; color: #fff; border-color: #0F1A11; }
+  .calc-slider {
+    width: 100%;
+    -webkit-appearance: none;
+    height: 2px;
+    background: rgba(15,26,17,0.15);
+    border-radius: 2px;
+    outline: none;
+  }
+  .calc-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px; height: 22px;
+    border-radius: 9999px;
+    background: #2E7A4F;
+    cursor: grab;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(46,122,79,0.3);
+  }
+  .calc-slider::-moz-range-thumb {
+    width: 22px; height: 22px;
+    border-radius: 9999px;
+    background: #2E7A4F;
+    cursor: grab;
+    border: 3px solid #fff;
+  }
+  .calc-display {
+    background: linear-gradient(135deg, #0F1A11 0%, #1a3520 100%);
+    color: #fff;
+    border-radius: 22px;
+    padding: 36px 32px;
+    position: relative;
+    overflow: hidden;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .calc-display::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 80% 20%, rgba(196,154,43,0.18) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .calc-display .calc-label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+  .calc-display .calc-price {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(56px, 8vw, 96px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin: 16px 0 6px;
+    position: relative;
+    z-index: 1;
+  }
+  .calc-display .calc-price .currency {
+    font-family: 'Geist Mono', monospace;
+    font-size: 16px;
+    vertical-align: top;
+    color: rgba(255,255,255,0.7);
+    margin-right: 6px;
+  }
+  .calc-display .calc-price .em-acc {
+    font-style: italic;
+    color: #C49A2B;
+  }
+  .calc-display .calc-foot {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.5;
+    position: relative;
+    z-index: 1;
+  }
+  .calc-display .calc-foot strong { color: #fff; font-weight: 500; }
+
+  /* Floating WhatsApp FAB */
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 60;
+    background: #25D366;
+    color: #fff;
+    width: 60px;
+    height: 60px;
+    border-radius: 9999px;
+    border: none;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 10px 30px rgba(37,211,102,0.35), 0 2px 6px rgba(0,0,0,0.12);
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    text-decoration: none;
+  }
+  .fab:hover { transform: scale(1.08); box-shadow: 0 14px 36px rgba(37,211,102,0.5); }
+  .fab svg { width: 28px; height: 28px; }
+  .fab-pulse {
+    position: absolute;
+    inset: -8px;
+    border-radius: 9999px;
+    border: 2px solid #25D366;
+    opacity: 0;
+    animation: fabPulse 2.4s ease-out infinite;
+  }
+  @keyframes fabPulse {
+    0%   { transform: scale(0.9); opacity: 0.6; }
+    100% { transform: scale(1.4); opacity: 0; }
+  }
+</style>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          display: ['Instrument Serif', 'serif'],
+          body: ['Inter', 'sans-serif'],
+          mono: ['Geist Mono', 'monospace'],
+        },
+        colors: { background: '#FFFFFF' },
+      },
+    },
+  };
+</script>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+const { useEffect, useRef, useState } = React;
+
+const VIDEO_SRC = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_083109_283f3553-e28f-428b-a723-d639c617eb2b.mp4';
+
+const NAV_ITEMS = [
+  { label: 'Home',       href: '#home',       active: true },
+  { label: 'Leistungen', href: '#leistungen' },
+  { label: 'Ablauf',     href: '#ablauf' },
+  { label: 'Preise',     href: '#preise' },
+  { label: 'Kontakt',    href: '#kontakt' },
+];
+
+// ── Hero video with fade-loop ─────────────────────────────
+function HeroVideo() {
+  const videoRef = useRef(null);
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const FADE = 0.5;
+    let rafId = null, resetTimer = null, stopped = false;
+
+    const tick = () => {
+      if (stopped) return;
+      const d = video.duration, t = video.currentTime;
+      if (d && !isNaN(d)) {
+        let op = 1;
+        if (t < FADE) op = Math.max(0, Math.min(1, t / FADE));
+        else if (t > d - FADE) op = Math.max(0, Math.min(1, (d - t) / FADE));
+        video.style.opacity = String(op);
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+    const onEnded = () => {
+      video.style.opacity = '0';
+      resetTimer = setTimeout(() => { video.currentTime = 0; video.play().catch(()=>{}); }, 100);
+    };
+    const onLoaded = () => { video.play().catch(()=>{}); rafId = requestAnimationFrame(tick); };
+    video.addEventListener('loadedmetadata', onLoaded);
+    video.addEventListener('ended', onEnded);
+    if (video.readyState >= 1) onLoaded();
+    return () => {
+      stopped = true;
+      if (rafId) cancelAnimationFrame(rafId);
+      if (resetTimer) clearTimeout(resetTimer);
+      video.removeEventListener('loadedmetadata', onLoaded);
+      video.removeEventListener('ended', onEnded);
+    };
+  }, []);
+  return (
+    <video ref={videoRef} src={VIDEO_SRC} muted playsInline preload="auto" crossOrigin="anonymous" />
+  );
+}
+
+// ── Reveal-on-scroll wrapper ─────────────────────────────
+function Reveal({ children, delay = 0, className = '' }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          setTimeout(() => el.classList.add('is-visible'), delay);
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [delay]);
+  return <div ref={ref} className={`reveal ${className}`}>{children}</div>;
+}
+
+// ── Sticky scroll-aware nav + section highlight ──────────
+function useScrollSpy(ids, offset = 120) {
+  const [active, setActive] = useState(ids[0]);
+  useEffect(() => {
+    const handler = () => {
+      const y = window.scrollY + offset;
+      let current = ids[0];
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= y) current = id;
+      }
+      setActive(current);
+    };
+    handler();
+    window.addEventListener('scroll', handler, { passive: true });
+    return () => window.removeEventListener('scroll', handler);
+  }, [ids.join(','), offset]);
+  return active;
+}
+
+function useScrolled(threshold = 60) {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > threshold);
+    handler();
+    window.addEventListener('scroll', handler, { passive: true });
+    return () => window.removeEventListener('scroll', handler);
+  }, [threshold]);
+  return scrolled;
+}
+
+// ── Magnetic hover ───────────────────────────────────────
+function useMagnetic(strength = 8) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onMove = (e) => {
+      const r = el.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width - 0.5) * strength;
+      const y = ((e.clientY - r.top) / r.height - 0.5) * strength;
+      el.style.transform = `translate(${x}px, ${y}px)`;
+    };
+    const onLeave = () => { el.style.transform = ''; };
+    el.addEventListener('mousemove', onMove);
+    el.addEventListener('mouseleave', onLeave);
+    return () => { el.removeEventListener('mousemove', onMove); el.removeEventListener('mouseleave', onLeave); };
+  }, [strength]);
+  return ref;
+}
+
+function PageBg() {
+  return (
+    <div className="page-bg">
+      <HeroVideo />
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// NAV (sticky + scroll-spy + mobile drawer)
+// ═══════════════════════════════════════════════════════════
+function Nav() {
+  const SECTION_IDS = ['home','leistungen','ablauf','preise','kontakt'];
+  const active = useScrollSpy(SECTION_IDS, 140);
+  const scrolled = useScrolled(60);
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <div className={`nav-wrap ${scrolled ? 'scrolled' : ''}`} style={{ paddingLeft: 24, paddingRight: 24 }}>
+        <nav
+          className="nav-inner relative z-10 max-w-7xl mx-auto flex justify-between items-center animate-fade-rise"
+          style={{ padding: '14px 24px' }}
+        >
+          <a href="#home" className="logo text-2xl sm:text-3xl tracking-tight">
+            Putzen<sup className="text-xs align-super relative -top-3 ml-px font-body font-normal">®</sup>
+          </a>
+
+          <div className="hidden md:flex items-center gap-7">
+            {NAV_ITEMS.map(item => {
+              const id = item.href.replace('#','');
+              const isActive = active === id;
+              return (
+                <a key={item.label} href={item.href} className="nav-link relative"
+                   style={{ color: isActive ? '#000' : '#6F6F6F' }}
+                   onMouseEnter={(e) => e.currentTarget.style.color = '#000'}
+                   onMouseLeave={(e) => e.currentTarget.style.color = isActive ? '#000' : '#6F6F6F'}>
+                  {item.label}
+                  <span
+                    style={{
+                      position: 'absolute',
+                      bottom: -6,
+                      left: 0,
+                      right: 0,
+                      height: 2,
+                      background: '#2E7A4F',
+                      borderRadius: 2,
+                      transformOrigin: 'left',
+                      transform: `scaleX(${isActive ? 1 : 0})`,
+                      transition: 'transform 0.3s ease',
+                    }}
+                  />
+                </a>
+              );
+            })}
+          </div>
+
+          <div className="flex items-center gap-3">
+            <a href="#kontakt" className="btn btn-sm hidden sm:inline-flex">Offerte anfragen</a>
+            <button
+              className="md:hidden w-10 h-10 grid place-items-center rounded-full"
+              style={{ background: 'rgba(15,26,17,0.06)' }}
+              onClick={() => setOpen(true)}
+              aria-label="Menü öffnen"
+            >
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M2 5h14M2 13h14" stroke="#0F1A11" strokeWidth="1.6" strokeLinecap="round" />
+              </svg>
+            </button>
+          </div>
+        </nav>
+      </div>
+
+      {/* Mobile drawer */}
+      <div
+        className="fixed inset-0 z-[60] md:hidden"
+        style={{
+          pointerEvents: open ? 'auto' : 'none',
+          background: 'rgba(15,26,17,0.4)',
+          opacity: open ? 1 : 0,
+          transition: 'opacity 0.3s ease',
+        }}
+        onClick={() => setOpen(false)}
+      >
+        <div
+          className="absolute right-0 top-0 bottom-0 w-[78%] max-w-sm flex flex-col"
+          style={{
+            background: 'rgba(255,255,255,0.95)',
+            backdropFilter: 'blur(20px) saturate(150%)',
+            transform: `translateX(${open ? '0%' : '100%'})`,
+            transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)',
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="flex justify-between items-center px-6 py-5 border-b" style={{ borderColor: 'rgba(0,0,0,0.08)' }}>
+            <span className="logo text-2xl">Putzen<sup className="text-[10px] align-super relative -top-2 ml-px font-body font-normal">®</sup></span>
+            <button onClick={() => setOpen(false)} className="w-10 h-10 grid place-items-center rounded-full" style={{ background: 'rgba(15,26,17,0.06)' }}>
+              <svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 2l10 10M12 2L2 12" stroke="#0F1A11" strokeWidth="1.6" strokeLinecap="round" /></svg>
+            </button>
+          </div>
+          <div className="flex flex-col px-6 py-8 gap-1">
+            {NAV_ITEMS.map(item => (
+              <a key={item.label} href={item.href} onClick={() => setOpen(false)}
+                 className="display-md text-3xl py-2" style={{ color: '#0F1A11' }}>
+                {item.label}
+              </a>
+            ))}
+          </div>
+          <div className="mt-auto px-6 pb-10 flex flex-col gap-4">
+            <a href="#kontakt" onClick={() => setOpen(false)} className="btn btn-md" style={{ justifyContent: 'center' }}>Offerte anfragen</a>
+            <a href="tel:+41315001234" className="text-sm text-center" style={{ color: '#6F6F6F' }}>+41 31 500 12 34</a>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// HERO
+// ═══════════════════════════════════════════════════════════
+function Hero() {
+  return (
+    <div id="home" className="relative min-h-screen w-full overflow-hidden">
+      <Nav />
+
+      <section
+        className="relative z-10 flex flex-col items-center justify-center text-center px-6 pb-40"
+        style={{ paddingTop: 'calc(8rem - 75px)' }}
+      >
+        <p className="eyebrow mb-6 animate-fade-rise">
+          <span className="dot"></span> Reinigungsdienst · Bern · seit 2014
+        </p>
+
+        <h1 className="display text-5xl sm:text-7xl md:text-8xl max-w-7xl font-normal animate-fade-rise">
+          Hinter jedem <em>Glanz,</em> echte <em>Schweizer Sorgfalt.</em>
+        </h1>
+
+        <p className="text-base sm:text-lg max-w-2xl mt-20 leading-relaxed animate-fade-rise-delay" style={{ color: '#6F6F6F' }}>
+          Wir reinigen Wohnungen, Büros und Geschäftsräume in Bern und Umgebung — mit eigenem Team, ökologischen Mitteln und der Sorgfalt, die man Tag für Tag wirklich sieht.
+        </p>
+
+        <div className="flex flex-col sm:flex-row items-center gap-3 mt-12 animate-fade-rise-delay-2">
+          <a href="#kontakt" className="btn btn-lg">Termin buchen</a>
+          <a href="#leistungen" className="btn btn-lg btn-ghost">Unsere Leistungen</a>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// TRUST BAR
+// ═══════════════════════════════════════════════════════════
+function TrustBar() {
+  const ITEMS = [
+    { name: 'Helvetia',     sub: 'Versichert bis CHF 5 Mio.' },
+    { name: 'EU Ecolabel',  sub: 'Zertifizierte Mittel' },
+    { name: 'BDO Schweiz',  sub: 'Geprüfte Buchhaltung' },
+    { name: 'allpura',      sub: 'Verband Schweizer Reinigung' },
+    { name: 'SUVA',         sub: 'Konforme Arbeitssicherheit' },
+  ];
+  return (
+    <div className="frost-light">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 trust-bar">
+        <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-12 justify-between">
+          <p className="label whitespace-nowrap">Vertrauen &amp; Zertifikate</p>
+          <div className="flex flex-wrap items-center gap-x-10 gap-y-4">
+            {ITEMS.map(it => (
+              <div key={it.name} className="trust-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                  <path d="M12 2L3 7v6c0 5 4 8 9 9 5-1 9-4 9-9V7l-9-5z" strokeLinejoin="round" />
+                  <path d="M8.5 12l2.5 2.5L16 9" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="font-display italic text-lg leading-none" style={{ fontFamily: "'Instrument Serif', serif" }}>{it.name}</span>
+                <span className="text-[11px] font-mono uppercase tracking-wider hidden lg:inline" style={{ color: '#6F6F6F' }}>· {it.sub}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// PULL QUOTE — editorial moment
+// ═══════════════════════════════════════════════════════════
+function PullQuote() {
+  return (
+    <section className="frost-light pullquote-section">
+      <Reveal>
+        <div className="max-w-7xl mx-auto px-6 sm:px-8">
+          <p className="pullquote">
+            „Sauberkeit ist kein Resultat — sie ist eine <span className="accent">Haltung,</span> die man jeden Tag wählt.“
+          </p>
+          <p className="pullquote-meta">Putzen Manifest · 2014</p>
+        </div>
+      </Reveal>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// TEAM
+// ═══════════════════════════════════════════════════════════
+const TEAM = [
+  { initial: 'M', name: 'Maja Zürcher',  role: 'Gründerin · Operations', bio: 'Führt das Tagesgeschäft seit 2014 und kennt jede Wohnung persönlich.', grad: 'linear-gradient(135deg,#c8c0a5,#6B7268)' },
+  { initial: 'L', name: 'Luka Beriša',   role: 'Teamleiter Privat',       bio: '12 Jahre Erfahrung. Sein Team reinigt 60% unserer Stammkund:innen.',     grad: 'linear-gradient(135deg,#a8c0a3,#2E7A4F)' },
+  { initial: 'A', name: 'Ana Marinković', role: 'Teamleiterin Büro',       bio: 'Verantwortlich für Praxen, Anwaltskanzleien und Bauschluss.',          grad: 'linear-gradient(135deg,#e0d5b7,#9c8556)' },
+  { initial: 'T', name: 'Thomas Frei',     role: 'Kundenservice',           bio: 'Ihr erster Ansprechpartner für Offerten und Spezialwünsche.',          grad: 'linear-gradient(135deg,#b8c7d0,#5d7a8c)' },
+];
+
+function Team() {
+  return (
+    <section className="frost-light py-28 md:py-36">
+      <Reveal>
+        <SectionHead
+          eyebrow="06 / Team"
+          title={<>Menschen hinter<br/>dem <em>Glanz.</em></>}
+          meta={<>25 feste<br/>Mitarbeitende</>}
+        />
+      </Reveal>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 mt-16 grid grid-cols-2 md:grid-cols-4 gap-5">
+        {TEAM.map((m, i) => (
+          <Reveal key={m.name} delay={i * 100}>
+            <div className="team-card">
+              <div className="team-photo" style={{ background: m.grad }}>
+                <span className="initial">{m.initial}</span>
+              </div>
+              <div className="team-name">{m.name}</div>
+              <div className="team-role">{m.role}</div>
+              <p className="team-bio">{m.bio}</p>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// PREIS-KALKULATOR
+// ═══════════════════════════════════════════════════════════
+function Calculator() {
+  const [type, setType]       = useState('privat');   // privat | büro | endreinigung
+  const [size, setSize]       = useState(85);          // m²
+  const [frequency, setFreq]  = useState('woche');     // woche | 2wochen | monat | einmal
+
+  // Base rates per m² (CHF), tuned per type
+  const rates = {
+    privat:       { perM2: 0.55, base: 38, mult: { woche: 0.9, '2wochen': 1.0, monat: 1.15, einmal: 1.35 } },
+    buero:        { perM2: 0.48, base: 36, mult: { woche: 0.85, '2wochen': 0.95, monat: 1.1, einmal: 1.4 } },
+    endreinigung: { perM2: 1.20, base: 180, mult: { woche: 1, '2wochen': 1, monat: 1, einmal: 1 } },
+  };
+  const r = rates[type === 'büro' ? 'buero' : type];
+  const raw = (r.base + size * r.perM2) * r.mult[type === 'endreinigung' ? 'einmal' : frequency];
+  const price = Math.round(raw / 5) * 5;
+  const yearly = frequency === 'woche' ? price * 52 : frequency === '2wochen' ? price * 26 : frequency === 'monat' ? price * 12 : price;
+
+  return (
+    <section className="frost-cream py-28 md:py-36">
+      <Reveal>
+        <SectionHead
+          eyebrow="05 / Kalkulator"
+          title={<>Festpreis<br/>in <em>10 Sekunden.</em></>}
+          meta={<>Unverbindliche Schätzung<br/>finale Offerte: 24 h</>}
+        />
+      </Reveal>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 mt-12">
+        <Reveal>
+          <div className="calculator">
+            {/* Controls */}
+            <div>
+              <div className="calc-group">
+                <label>Was soll gereinigt werden?</label>
+                <div className="calc-options">
+                  {[
+                    { v: 'privat',       l: 'Privat' },
+                    { v: 'büro',         l: 'Büro / Praxis' },
+                    { v: 'endreinigung', l: 'Endreinigung' },
+                  ].map(o => (
+                    <button key={o.v} className={`calc-option ${type === o.v ? 'active' : ''}`} onClick={() => setType(o.v)}>{o.l}</button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="calc-group">
+                <label>Wohnfläche <span style={{ color: '#0F1A11', fontWeight: 500, marginLeft: 6 }}>{size} m²</span></label>
+                <input type="range" min="30" max="300" step="5" value={size} onChange={(e) => setSize(Number(e.target.value))} className="calc-slider" />
+                <div className="flex justify-between text-[10px] font-mono uppercase" style={{ color: '#6F6F6F' }}>
+                  <span>30 m²</span><span>300 m²</span>
+                </div>
+              </div>
+
+              {type !== 'endreinigung' && (
+                <div className="calc-group">
+                  <label>Wie oft?</label>
+                  <div className="calc-options">
+                    {[
+                      { v: 'woche',    l: 'Wöchentlich' },
+                      { v: '2wochen',  l: '2-wöchentlich' },
+                      { v: 'monat',    l: 'Monatlich' },
+                      { v: 'einmal',   l: 'Einmalig' },
+                    ].map(o => (
+                      <button key={o.v} className={`calc-option ${frequency === o.v ? 'active' : ''}`} onClick={() => setFreq(o.v)}>{o.l}</button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Display */}
+            <div className="calc-display">
+              <div>
+                <span className="calc-label">Ihr Festpreis</span>
+                <div className="calc-price">
+                  <span className="currency">CHF</span>
+                  <span className="em-acc">{price}</span>
+                </div>
+                <span className="calc-label">{type === 'endreinigung' ? 'Pauschal' : 'Pro Einsatz'}</span>
+              </div>
+              <div className="calc-foot">
+                {type === 'endreinigung'
+                  ? <>Inkl. Abnahmegarantie durch die Verwaltung. Reinigungsmittel und Anfahrt inkludiert. <strong>Festpreis, schriftlich.</strong></>
+                  : <>Inkl. eigenem Team, Bio-Mitteln und Anfahrt. <strong>≈ CHF {yearly.toLocaleString('de-CH')}/Jahr</strong> bei dieser Frequenz.</>
+                }
+                <div style={{ marginTop: 18 }}>
+                  <a href="#kontakt" className="btn btn-md" style={{ background: '#C49A2B', color: '#0F1A11' }}>
+                    Offerte fixieren →
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// WHATSAPP FAB
+// ═══════════════════════════════════════════════════════════
+function WhatsAppFab() {
+  return (
+    <a
+      href="https://wa.me/41315001234?text=Hallo%20Putzen%2C%20ich%20m%C3%B6chte%20eine%20Offerte%20anfragen"
+      target="_blank"
+      rel="noopener"
+      className="fab"
+      aria-label="WhatsApp"
+    >
+      <span className="fab-pulse"></span>
+      <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-1.6-.8-2.6-1.4-3.7-3.2-.3-.5.3-.5.8-1.5.1-.2 0-.4 0-.5 0-.1-.7-1.7-.9-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7 0 1.6 1.2 3.1 1.3 3.3.2.2 2.3 3.5 5.5 4.9 2 .8 2.7.9 3.7.8.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4-.1-.1-.3-.2-.6-.3z"/>
+        <path d="M20.5 3.5C18.2 1.2 15.2 0 12 0 5.4 0 .1 5.3.1 11.8c0 2.1.5 4.1 1.6 5.9L0 24l6.5-1.7c1.7.9 3.6 1.4 5.5 1.4h.1c6.5 0 11.8-5.3 11.9-11.8 0-3.2-1.3-6.1-3.5-8.4zM12 21.7h-.1c-1.7 0-3.4-.5-4.8-1.4l-.4-.2-3.6 1 1-3.5-.2-.4c-1-1.6-1.5-3.4-1.5-5.3 0-5.4 4.4-9.8 9.8-9.8 2.6 0 5.1 1 6.9 2.9 1.8 1.8 2.9 4.3 2.9 6.9-.1 5.5-4.5 9.8-9.9 9.8z"/>
+      </svg>
+    </a>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// SECTION HEAD
+// ═══════════════════════════════════════════════════════════
+function SectionHead({ eyebrow, title, meta, dark }) {
+  return (
+    <div className="max-w-7xl mx-auto px-6 sm:px-8">
+      <div className="grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-6 md:gap-12 items-end pb-8 border-b" style={{ borderColor: dark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.12)' }}>
+        <p className="eyebrow" style={{ color: dark ? 'rgba(255,255,255,0.55)' : '#6F6F6F' }}>
+          <span className="dot"></span> {eyebrow}
+        </p>
+        <h2 className="display-md text-4xl sm:text-5xl md:text-6xl" style={{ color: dark ? '#fff' : '#000' }}>
+          {title}
+        </h2>
+        {meta && (
+          <p className="text-right text-xs font-mono uppercase tracking-wider leading-relaxed" style={{ color: dark ? 'rgba(255,255,255,0.5)' : '#6F6F6F' }}>
+            {meta}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// SERVICES
+// ═══════════════════════════════════════════════════════════
+const SERVICES = [
+  { n: '01', title: 'Unterhalts­reinigung', desc: 'Regelmässige Reinigung von Küche, Bad, Böden und Wohnräumen — wöchentlich oder nach Plan. Schlüsselservice inklusive.', from: 'Ab CHF', amount: '42/h', badge: 'Beliebt', span: 'md:col-span-7', dark: true },
+  { n: '02', title: 'Endreinigung mit Abnahme­garantie', desc: 'Mietwohnung übergeben ohne Sorgen — wir garantieren die Abnahme durch die Verwaltung.', from: 'Ab CHF', amount: '380', span: 'md:col-span-5' },
+  { n: '03', title: 'Büro­reinigung', desc: 'Tägliche oder wöchentliche Reinigung für Büros und Praxen.', from: 'Ab CHF', amount: '38/h', span: 'md:col-span-4' },
+  { n: '04', title: 'Fenster & Glas', desc: 'Streifenfreie Reinigung von Fenstern, Türen und Glasfassaden.', from: 'Ab CHF', amount: '8/m²', span: 'md:col-span-4' },
+  { n: '05', title: 'Teppich & Polster', desc: 'Tiefenreinigung mit Sprühextraktion — schonend zu Fasern und Farben.', from: 'Ab CHF', amount: '12/m²', span: 'md:col-span-4' },
+  { n: '06', title: 'Bau­schluss­reinigung', desc: 'Grob-, Fein- und Glanzreinigung nach Bauabschluss. Persönliche Übergabe vor Ort und detaillierte Dokumentation.', from: 'Auf Anfrage', amount: 'Offerte', span: 'md:col-span-8', dark: false, badge: 'Premium' },
+  { n: '07', title: 'Spezial­einsätze', desc: 'Wasserschaden, Brand, Geruch, Schimmel — wir handeln schnell und diskret.', from: '24/7 erreichbar', amount: 'Notfall', span: 'md:col-span-4' },
+];
+
+function Services() {
+  return (
+    <section id="leistungen" className="frost-light py-28 md:py-36">
+      <Reveal>
+        <SectionHead
+          eyebrow="01 / Leistungen"
+          title={<>Sieben Reinigungen,<br/><em>ein Standard.</em></>}
+          meta={<>Alle Preise in CHF<br/>inkl. MwSt 8.1%</>}
+        />
+      </Reveal>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 mt-12">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+          {SERVICES.map((s, i) => (
+            <Reveal key={s.n} delay={i * 60} className={s.span}>
+              <div className={`svc-card ${s.dark ? 'dark' : ''}`}>
+                {s.badge && <span className="badge">{s.badge}</span>}
+                <p className="eyebrow"><span className="dot"></span> N° {s.n}</p>
+                <h3>{s.title}</h3>
+                <p>{s.desc}</p>
+                <div className="price-row">
+                  <div>
+                    <div className="from">{s.from}</div>
+                    <div className="amount" style={{ marginTop: 4 }}>{s.amount}</div>
+                  </div>
+                  <a href="#kontakt" className="arrow-link">↗</a>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// WHY US / STATS
+// ═══════════════════════════════════════════════════════════
+const STATS = [
+  { num: <>12<em>+</em></>, label: 'Jahre Erfahrung am Markt — gegründet 2014 in Köniz.' },
+  { num: '3\'840', label: 'Reinigungen pro Jahr in Bern und Umgebung.' },
+  { num: <>98<em>%</em></>, label: 'Kunden, die uns weiterempfehlen würden.' },
+  { num: <>24<em>h</em></>, label: 'Antwortzeit für Erstanfragen — meistens schneller.' },
+];
+
+function Stats() {
+  return (
+    <section className="stats-section frost-cream py-28 md:py-36">
+      <Reveal>
+        <SectionHead
+          eyebrow="02 / Warum Putzen"
+          title={<>Zahlen, die <em>für uns</em> sprechen.</>}
+          meta={<>Erhoben Januar 2026<br/>geprüft durch BDO Schweiz</>}
+        />
+      </Reveal>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 mt-16 grid grid-cols-1 md:grid-cols-2 gap-y-12 gap-x-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10">
+          {STATS.map((s, i) => (
+            <Reveal key={i} delay={i * 80}>
+              <div className="border-t pt-5" style={{ borderColor: 'rgba(15,26,17,0.18)' }}>
+                <div className="stat-num">{s.num}</div>
+                <p className="text-sm leading-relaxed mt-3" style={{ color: '#4A4F4B', maxWidth: 240 }}>{s.label}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal delay={150}>
+          <div className="rounded-3xl overflow-hidden" style={{ minHeight: 320 }}>
+            <div className="relative w-full h-full" style={{
+              background: `
+                radial-gradient(circle at 70% 30%, rgba(196,154,43,0.25) 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(110,224,138,0.10) 0%, transparent 55%),
+                linear-gradient(135deg, #1a3520 0%, #0F1A11 100%)
+              `,
+              minHeight: 320,
+            }}>
+              <div className="absolute bottom-6 left-6 right-6 p-6 rounded-2xl backdrop-blur" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <p className="text-xs font-mono uppercase tracking-wider mb-3" style={{ color: 'rgba(255,255,255,0.5)' }}>Unser Versprechen</p>
+                <ul className="space-y-2.5 text-sm" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                  <li>✓ Eigene, fest angestellte Mitarbeitende</li>
+                  <li>✓ Versichert bis CHF 5 Mio. Haftpflicht</li>
+                  <li>✓ Ökologische Mittel (EU Ecolabel)</li>
+                  <li>✓ Zufriedenheitsgarantie</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// PROCESS
+// ═══════════════════════════════════════════════════════════
+const STEPS = [
+  { n: '01', title: 'Anfrage stellen.', desc: 'Per Formular, Telefon oder WhatsApp — Sie schildern uns Ihren Bedarf in wenigen Sätzen.' },
+  { n: '02', title: 'Offerte erhalten.', desc: 'Innerhalb 24 Stunden bekommen Sie einen transparenten Festpreis — schriftlich, ohne Kleingedrucktes.' },
+  { n: '03', title: 'Termin fixieren.', desc: 'Wir koordinieren den Termin per E-Mail oder SMS — Sie wählen einen passenden Zeitslot.' },
+  { n: '04', title: 'Wir reinigen.', desc: 'Pünktlich vor Ort, in Uniform und mit eigener Ausrüstung. Sie zahlen erst, wenn alles stimmt.' },
+];
+
+function Process() {
+  return (
+    <section id="ablauf" className="frost-light py-28 md:py-36">
+      <Reveal>
+        <SectionHead
+          eyebrow="03 / Ablauf"
+          title={<>So einfach wie<br/>ein <em>Telefonanruf.</em></>}
+          meta={<>Vier Schritte<br/>von Anfrage bis sauber</>}
+        />
+      </Reveal>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {STEPS.map((s, i) => (
+          <Reveal key={s.n} delay={i * 100}>
+            <div className="step">
+              <p className="font-mono text-[11px] uppercase tracking-wider" style={{ color: '#2E7A4F' }}>Schritt {s.n}</p>
+              <h4>{s.title}</h4>
+              <p className="text-sm leading-relaxed" style={{ color: '#4A4F4B', maxWidth: 280 }}>{s.desc}</p>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// PRICING
+// ═══════════════════════════════════════════════════════════
+const PACKAGES = [
+  {
+    name: 'Basis',
+    italicEnd: '',
+    desc: 'Für gelegentliche Hilfe — Sie buchen, wir kommen.',
+    currency: 'CHF', amount: '42', per: '/ Stunde',
+    features: [
+      'Mindestens 3 Stunden pro Einsatz',
+      'Eigene Reinigungsmittel auf Wunsch',
+      'Online-Buchung & Bezahlung',
+      'Deutsch- und schweizerdeutsch­sprechendes Team',
+    ],
+    minus: ['Kein fester Reinigungstag', 'Kein Schlüsselservice'],
+    cta: 'Wählen',
+    ghost: true,
+  },
+  {
+    name: 'Komfort',
+    italicEnd: '↗',
+    desc: 'Unser beliebtestes Paket — regelmässig, planbar, fair.',
+    currency: 'CHF', amount: '38', per: '/ Stunde',
+    features: [
+      'Fester Reinigungstag & festes Team',
+      'Schlüsselservice mit Tresor inkl.',
+      'Bio-Reinigungsmittel inkl.',
+      'Persönliche Ansprechperson',
+      'Zufriedenheitsgarantie 100%',
+      'Flexibel pausierbar',
+    ],
+    minus: [],
+    cta: 'Beliebte Wahl',
+    featured: true,
+  },
+  {
+    name: 'Premium',
+    italicEnd: '',
+    desc: 'Für Liebhaber des Aussergewöhnlichen — Concierge-Niveau.',
+    currency: 'ab CHF', amount: '68', per: '/ Stunde',
+    features: [
+      'Dediziertes 2-Personen-Team',
+      'Wäscheservice, Bügeln, Einkauf',
+      'Pflanzenpflege & Detailarbeiten',
+      'Inventur und Bestandskontrolle',
+      'Diskretion & NDA verfügbar',
+      'Concierge per WhatsApp 24/7',
+    ],
+    minus: [],
+    cta: 'Beratung anfragen',
+    ghost: true,
+  },
+];
+
+function Pricing() {
+  return (
+    <section id="preise" className="frost-cream py-28 md:py-36">
+      <Reveal>
+        <SectionHead
+          eyebrow="04 / Preise"
+          title={<>Pakete für<br/>jede <em>Wohnsituation.</em></>}
+          meta={<>Festpreise · keine Abos<br/>jederzeit kündbar</>}
+        />
+      </Reveal>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 mt-16 grid grid-cols-1 md:grid-cols-3 gap-5">
+        {PACKAGES.map((p, i) => (
+          <Reveal key={p.name} delay={i * 100}>
+            <div className={`pkg ${p.featured ? 'featured' : ''}`}>
+              <div className="pkg-name">{p.name}{p.italicEnd && <em> {p.italicEnd}</em>}</div>
+              <p className="pkg-desc">{p.desc}</p>
+              <div className="pkg-price">
+                <span className="currency">{p.currency}</span>
+                <span className="amount">{p.amount}</span>
+                <span className="per">{p.per}</span>
+              </div>
+              <ul>
+                {p.features.map((f, j) => <li key={j}>{f}</li>)}
+                {p.minus.map((f, j) => <li key={'x'+j} className="x">{f}</li>)}
+              </ul>
+              <a href="#kontakt" className={`btn btn-md pkg-cta ${p.ghost ? 'btn-ghost' : ''}`}>{p.cta}</a>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 mt-10 flex flex-col sm:flex-row justify-between gap-4 text-sm" style={{ color: '#6F6F6F' }}>
+        <span>Alle Preise inkl. MwSt 8.1% · Anfahrt im Grossraum Bern inklusive</span>
+        <span>Nichts dabei? <a href="#kontakt" style={{ color: '#000', textDecoration: 'underline' }}>Individuelle Offerte →</a></span>
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// TESTIMONIALS
+// ═══════════════════════════════════════════════════════════
+function Testimonials() {
+  return (
+    <section className="frost-light py-28 md:py-36">
+      <Reveal>
+        <SectionHead
+          eyebrow="05 / Stimmen"
+          title={<>Was Kundinnen und<br/>Kunden <em>sagen.</em></>}
+          meta={<>412 Bewertungen<br/>4.96 von 5.0 Sternen</>}
+        />
+      </Reveal>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 mt-16 grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-10">
+        <Reveal>
+          <div className="testi-card" style={{ minHeight: 460, padding: 48 }}>
+            <div className="quote-mark">"</div>
+            <blockquote className="display-md text-2xl sm:text-3xl flex-1" style={{ lineHeight: 1.25 }}>
+              Putzen reinigt unsere Praxis seit fast vier Jahren — und ich habe in dieser Zeit <em>nicht ein einziges Mal</em> nachfragen müssen. Es ist einfach immer perfekt. Genau das, was man sich unter Schweizer Qualität vorstellt.
+            </blockquote>
+            <div className="flex items-center gap-4 pt-6 border-t" style={{ borderColor: 'rgba(0,0,0,0.1)' }}>
+              <div className="avatar"></div>
+              <div className="flex flex-col leading-tight flex-1">
+                <span className="font-medium text-base">Dr. Andrea Müller</span>
+                <span className="text-xs font-mono uppercase tracking-wider mt-1" style={{ color: '#6F6F6F' }}>Zahnarztpraxis · Kirchenfeld</span>
+              </div>
+              <span className="text-sm" style={{ color: '#C49A2B' }}>★★★★★</span>
+            </div>
+          </div>
+        </Reveal>
+
+        <div className="flex flex-col gap-4">
+          <Reveal delay={100}>
+            <div className="testi-card">
+              <p className="text-sm leading-relaxed" style={{ color: '#4A4F4B' }}>
+                Die Endreinigung lief unkompliziert, die Verwaltung hat ohne Beanstandung übernommen. Empfehlung.
+              </p>
+              <div className="flex items-center gap-3 pt-4 border-t" style={{ borderColor: 'rgba(0,0,0,0.1)' }}>
+                <div className="avatar" style={{ background: 'linear-gradient(135deg,#93a07a,#2B4A2E)' }}></div>
+                <div className="flex flex-col leading-tight flex-1">
+                  <span className="font-medium text-sm">Lukas R.</span>
+                  <span className="text-[11px] font-mono uppercase tracking-wider mt-0.5" style={{ color: '#6F6F6F' }}>Privatkunde · Köniz</span>
+                </div>
+                <span className="text-xs" style={{ color: '#C49A2B' }}>★★★★★</span>
+              </div>
+            </div>
+          </Reveal>
+          <Reveal delay={180}>
+            <div className="testi-card">
+              <p className="text-sm leading-relaxed" style={{ color: '#4A4F4B' }}>
+                Wir haben drei Reinigungsfirmen probiert. Putzen ist die einzige, bei der wirklich jede Woche dasselbe Team kommt.
+              </p>
+              <div className="flex items-center gap-3 pt-4 border-t" style={{ borderColor: 'rgba(0,0,0,0.1)' }}>
+                <div className="avatar" style={{ background: 'linear-gradient(135deg,#d4c8a8,#8d8060)' }}></div>
+                <div className="flex flex-col leading-tight flex-1">
+                  <span className="font-medium text-sm">Sandra Bühler</span>
+                  <span className="text-[11px] font-mono uppercase tracking-wider mt-0.5" style={{ color: '#6F6F6F' }}>Anwaltskanzlei · Bern</span>
+                </div>
+                <span className="text-xs" style={{ color: '#C49A2B' }}>★★★★★</span>
+              </div>
+            </div>
+          </Reveal>
+          <Reveal delay={260}>
+            <div className="testi-card">
+              <p className="text-sm leading-relaxed" style={{ color: '#4A4F4B' }}>
+                Pünktlich, freundlich, gründlich. Preis-Leistung absolut fair für Bern.
+              </p>
+              <div className="flex items-center gap-3 pt-4 border-t" style={{ borderColor: 'rgba(0,0,0,0.1)' }}>
+                <div className="avatar" style={{ background: 'linear-gradient(135deg,#c8b994,#6B6A5E)' }}></div>
+                <div className="flex flex-col leading-tight flex-1">
+                  <span className="font-medium text-sm">Familie Schneider</span>
+                  <span className="text-[11px] font-mono uppercase tracking-wider mt-0.5" style={{ color: '#6F6F6F' }}>Privatkunde · Ostermundigen</span>
+                </div>
+                <span className="text-xs" style={{ color: '#C49A2B' }}>★★★★★</span>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// SERVICE AREAS
+// ═══════════════════════════════════════════════════════════
+const AREAS = [
+  { n: '01', name: 'Bern Innenstadt', plz: '3001–3013', soon: false },
+  { n: '02', name: 'Köniz', plz: '3098', soon: false },
+  { n: '03', name: 'Ostermundigen', plz: '3072', soon: false },
+  { n: '04', name: 'Muri b. Bern', plz: '3074', soon: false },
+  { n: '05', name: 'Bümpliz / Bethlehem', plz: '3027', soon: false },
+  { n: '06', name: 'Worb', plz: '3076', soon: false },
+  { n: '07', name: 'Belp', plz: '3123', soon: false },
+  { n: '08', name: 'Ittigen', plz: '3063', soon: false },
+  { n: '09', name: 'Münsingen', plz: '3110', soon: true },
+  { n: '10', name: 'Thun (auf Anfrage)', plz: '3600', soon: true },
+];
+
+function Areas() {
+  return (
+    <section className="frost-cream py-28 md:py-36">
+      <Reveal>
+        <SectionHead
+          eyebrow="06 / Einsatzgebiet"
+          title={<>Bern und<br/><em>Umgebung.</em></>}
+          meta={<>Anfahrt im Grossraum<br/>Bern inklusive</>}
+        />
+      </Reveal>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 mt-16 grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-12 items-start">
+        <Reveal>
+          <div className="rounded-3xl p-8 relative overflow-hidden" style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.06)', aspectRatio: '4/3' }}>
+            <p className="absolute top-6 left-6 eyebrow"><span className="dot"></span> Karte · Grossraum Bern</p>
+            <svg viewBox="0 0 480 360" preserveAspectRatio="xMidYMid meet" style={{ width: '100%', height: '100%' }}>
+              <defs>
+                <pattern id="grid" x="0" y="0" width="14" height="14" patternUnits="userSpaceOnUse">
+                  <circle cx="2" cy="2" r="0.8" fill="#000" opacity="0.15" />
+                </pattern>
+              </defs>
+              <rect x="0" y="0" width="480" height="360" fill="url(#grid)" />
+              <path d="M 50 80 Q 120 100 180 140 Q 240 180 200 240 Q 160 290 280 320"
+                    stroke="#4A7BC8" strokeWidth="3" fill="none" opacity="0.55" />
+              <text x="100" y="75" fontFamily="Geist Mono, monospace" fontSize="9" fill="#4A7BC8" opacity="0.7">AARE</text>
+              <circle cx="240" cy="180" r="50" fill="none" stroke="#000" strokeWidth="0.6" opacity="0.25" />
+              <circle cx="240" cy="180" r="90" fill="none" stroke="#000" strokeWidth="0.6" opacity="0.18" />
+              <circle cx="240" cy="180" r="135" fill="none" stroke="#000" strokeWidth="0.6" opacity="0.12" />
+
+              <g fontFamily="Geist Mono, monospace" fontSize="9" fill="#000">
+                <text x="252" y="178">BERN</text>
+                <text x="172" y="148">KÖNIZ</text>
+                <text x="320" y="156">OSTERMUNDIGEN</text>
+                <text x="280" y="240">MURI</text>
+                <text x="120" y="220">BÜMPLIZ</text>
+                <text x="340" y="220">WORB</text>
+                <text x="180" y="280">BELP</text>
+                <text x="380" y="100">ITTIGEN</text>
+              </g>
+
+              {/* pins */}
+              <g>
+                <circle cx="240" cy="180" r="8" fill="#C49A2B" />
+                <circle cx="240" cy="180" r="14" fill="#C49A2B" opacity="0.25" />
+                {[[180,160],[330,170],[290,235],[130,235],[340,235],[195,280],[385,115]].map(([x,y],i) => (
+                  <g key={i}>
+                    <circle cx={x} cy={y} r="5" fill="#2E7A4F" />
+                    <circle cx={x} cy={y} r="9" fill="#2E7A4F" opacity="0.2" />
+                  </g>
+                ))}
+              </g>
+            </svg>
+          </div>
+        </Reveal>
+
+        <Reveal delay={150}>
+          <div>
+            <div className="grid grid-cols-[30px_1fr_auto_auto] gap-4 pb-3 font-mono text-[10px] uppercase tracking-wider" style={{ color: '#6F6F6F' }}>
+              <span>N°</span><span>Ort</span><span>PLZ</span><span></span>
+            </div>
+            {AREAS.map(a => (
+              <div key={a.n} className="grid grid-cols-[30px_1fr_auto_auto] gap-4 items-center py-4 border-t" style={{ borderColor: 'rgba(0,0,0,0.1)', fontSize: 15 }}>
+                <span className="font-mono text-[11px]" style={{ color: '#6F6F6F' }}>{a.n}</span>
+                <span className="font-medium">{a.name}</span>
+                <span className="font-mono text-xs" style={{ color: '#6F6F6F' }}>{a.plz}</span>
+                <span className="w-2 h-2 rounded-full" style={{ background: a.soon ? '#C49A2B' : '#2E7A4F' }}></span>
+              </div>
+            ))}
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// FAQ
+// ═══════════════════════════════════════════════════════════
+const FAQ = [
+  { q: 'Wie schnell kann ich einen Termin bekommen?', a: 'Für Unterhalts- und Büroreinigungen meist innerhalb von 3–5 Werktagen. Endreinigungen planen wir 2–3 Wochen im Voraus. Notfälle bedienen wir innerhalb von 24 Stunden.' },
+  { q: 'Muss ich beim Reinigungstermin zu Hause sein?', a: 'Nein. Viele unserer Kundinnen und Kunden hinterlegen uns einen Schlüssel — bei uns im Tresor oder über einen Briefkasten. Auf Wunsch erhalten Sie nach jeder Reinigung ein Foto-Protokoll per WhatsApp.', open: true },
+  { q: 'Welche Reinigungsmittel verwenden Sie?', a: 'Standardmässig arbeiten wir mit EU-Ecolabel-zertifizierten, biologisch abbaubaren Mitteln. Für Allergiker:innen oder Haushalte mit Haustieren haben wir parfümfreie Alternativen.' },
+  { q: 'Sind Sie versichert?', a: 'Ja — wir sind bei der Helvetia mit einer Betriebshaftpflicht bis CHF 5 Mio. versichert. Sollte etwas zu Schaden kommen, regeln wir das unkompliziert.' },
+  { q: 'Was passiert, wenn ich nicht zufrieden bin?', a: 'Sie melden sich innerhalb von 24 Stunden — wir kommen zurück und arbeiten nach. Kostenlos. Das ist unsere Zufriedenheitsgarantie und wir nehmen sie ernst.' },
+  { q: 'Wie wird abgerechnet?', a: 'Monatlich per Rechnung mit 30 Tagen Zahlungsfrist. Auf Wunsch auch per TWINT, Kreditkarte oder LSV.' },
+];
+
+function FAQSection() {
+  return (
+    <section className="frost-light py-28 md:py-36">
+      <Reveal>
+        <SectionHead
+          eyebrow="07 / Häufige Fragen"
+          title={<>Bevor Sie<br/><em>fragen.</em></>}
+          meta="Aktualisiert 05.2026"
+        />
+      </Reveal>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 mt-16 grid grid-cols-1 md:grid-cols-[1fr_1.6fr] gap-16">
+        <Reveal>
+          <div>
+            <h3 className="display-md text-3xl sm:text-4xl mb-5">
+              Noch nicht das<br/>Richtige <em>gefunden?</em>
+            </h3>
+            <p className="text-sm leading-relaxed mb-6" style={{ color: '#4A4F4B' }}>
+              Rufen Sie uns an — wir nehmen uns Zeit, Ihren Bedarf zu verstehen, und schicken Ihnen am gleichen Tag eine massgeschneiderte Offerte.
+            </p>
+            <a href="tel:+41315001234" className="btn btn-md">+41 31 500 12 34</a>
+          </div>
+        </Reveal>
+
+        <Reveal delay={100}>
+          <div className="border-t" style={{ borderColor: '#000' }}>
+            {FAQ.map((f, i) => (
+              <details key={i} className="faq" {...(f.open ? { open: true } : {})}>
+                <summary>
+                  <span className="num">{String(i+1).padStart(2,'0')}</span>
+                  <h5>{f.q}</h5>
+                  <span className="toggle">+</span>
+                </summary>
+                <div className="answer">{f.a}</div>
+              </details>
+            ))}
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// BOOKING
+// ═══════════════════════════════════════════════════════════
+function Booking() {
+  return (
+    <section id="kontakt" className="booking-section frost-cream py-28 md:py-36">
+      <Reveal>
+        <SectionHead
+          eyebrow="08 / Termin buchen"
+          title={<>In zwei Minuten<br/>zur <em>Offerte.</em></>}
+          meta={<>Antwort innerhalb 24 h<br/>· keine versteckten Kosten</>}
+        />
+      </Reveal>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 mt-16 grid grid-cols-1 md:grid-cols-[1.1fr_1fr] gap-12 items-center">
+        <Reveal>
+          <div>
+            <p className="text-base leading-relaxed mb-8" style={{ color: '#4A4F4B', maxWidth: 460 }}>
+              Schreiben Sie uns kurz, was Sie brauchen — wir antworten persönlich, innerhalb eines Werktages, mit einem schriftlichen Festpreis.
+            </p>
+            <div className="flex flex-col gap-5 text-sm" style={{ color: '#0F1A11' }}>
+              <div className="flex gap-4 items-center">
+                <span className="w-10 h-10 rounded-full grid place-items-center" style={{ background: '#2E7A4F', color: '#fff' }}>☎</span>
+                <a href="tel:+41315001234" style={{ color: '#0F1A11', textDecoration: 'none' }}>+41 31 500 12 34</a>
+              </div>
+              <div className="flex gap-4 items-center">
+                <span className="w-10 h-10 rounded-full grid place-items-center" style={{ background: '#2E7A4F', color: '#fff' }}>@</span>
+                <a href="mailto:hallo@putzen.ch" style={{ color: '#0F1A11', textDecoration: 'none' }}>hallo@putzen.ch</a>
+              </div>
+              <div className="flex gap-4 items-center">
+                <span className="w-10 h-10 rounded-full grid place-items-center" style={{ background: '#2E7A4F', color: '#fff' }}>↗</span>
+                <span>Schwarzenburgstrasse 142, 3098 Köniz</span>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+
+        <Reveal delay={150}>
+          <form className="booking-form" onSubmit={(e) => { e.preventDefault(); alert('Danke! Wir melden uns innerhalb 24 Stunden.'); }}>
+            <div className="field">
+              <label>Ich brauche</label>
+              <select>
+                <option>Unterhaltsreinigung Privat</option>
+                <option>Endreinigung mit Abnahmegarantie</option>
+                <option>Büroreinigung</option>
+                <option>Fenster & Glas</option>
+                <option>Teppich & Polster</option>
+                <option>Bauschlussreinigung</option>
+                <option>Notfall / Spezialeinsatz</option>
+              </select>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="field"><label>Name</label><input type="text" placeholder="Maria Müller" /></div>
+              <div className="field"><label>PLZ & Ort</label><input type="text" placeholder="3012 Bern" /></div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="field"><label>Telefon</label><input type="tel" placeholder="+41 79 ..." /></div>
+              <div className="field"><label>E-Mail</label><input type="email" placeholder="maria@..." /></div>
+            </div>
+            <button type="submit" className="btn btn-md" style={{ marginTop: 6, justifyContent: 'center', padding: '14px' }}>
+              Offerte anfragen →
+            </button>
+            <p className="text-[11px] text-center font-mono uppercase tracking-wider" style={{ color: '#6F6F6F' }}>
+              Antwort innerhalb 24 h · keine versteckten Kosten
+            </p>
+          </form>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// FOOTER + MARQUEE
+// ═══════════════════════════════════════════════════════════
+const CITIES = ['Bern','Köniz','Ostermundigen','Muri b. Bern','Bümpliz','Worb','Belp','Ittigen','Münsingen','Thun','Wabern','Liebefeld'];
+
+function Footer() {
+  return (
+    <footer>
+      <div className="marquee">
+        <div className="marquee-track">
+          {Array.from({ length: 2 }).flatMap((_, idx) => CITIES.map((c, j) => (
+            <span key={`${idx}-${j}`} className="marquee-item">
+              <span className="dot"></span>{c}
+            </span>
+          )))}
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 pt-20 pb-8">
+        <div className="grid grid-cols-1 md:grid-cols-[1.6fr_1fr_1fr_1fr] gap-12 pb-16 border-b" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>
+          <div>
+            <h4 className="display-md text-3xl mb-4" style={{ color: '#fff' }}>
+              Reinigung mit<br/><em style={{ color: '#C49A2B' }}>Handschlag­qualität.</em>
+            </h4>
+            <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)', maxWidth: 360 }}>
+              Putzen GmbH ist ein familiengeführter Reinigungsdienst aus Köniz bei Bern. Seit 2014 reinigen wir Wohnungen, Büros und Geschäftsräume in der ganzen Region.
+            </p>
+          </div>
+
+          {[
+            { title: 'Leistungen', items: ['Unterhaltsreinigung','Endreinigung','Büroreinigung','Fenster & Glas','Teppich & Polster','Bauschluss','Spezialeinsätze'] },
+            { title: 'Firma',      items: ['Über uns','Team','Jobs & Karriere','Nachhaltigkeit','Presse','Partner'] },
+            { title: 'Service',    items: ['Offerte anfragen','Ablauf','Preise','Gebiete','FAQ','Kundenservice'] },
+          ].map(col => (
+            <div key={col.title}>
+              <h5 className="font-mono text-[11px] uppercase tracking-wider mb-5" style={{ color: 'rgba(255,255,255,0.5)' }}>{col.title}</h5>
+              <ul className="flex flex-col gap-3">
+                {col.items.map(item => (
+                  <li key={item}><a href="#" className="text-sm" style={{ color: '#fff', textDecoration: 'none' }}>{item}</a></li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <div className="wordmark">putzen<em>.</em></div>
+
+        <div className="flex flex-wrap justify-between items-center gap-3 pt-6 font-mono text-[11px] uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.5)' }}>
+          <span>© 2014–2026 Putzen GmbH · CHE-123.456.789 MWST</span>
+          <div className="flex gap-6">
+            {['AGB','Datenschutz','Impressum','Cookies'].map(l => (
+              <a key={l} href="#" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none' }}>{l}</a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════
+// APP
+// ═══════════════════════════════════════════════════════════
+function App() {
+  return (
+    <>
+      <PageBg />
+      <Hero />
+      <Services />
+      <TrustBar />
+      <Stats />
+      <Process />
+      <Calculator />
+      <Pricing />
+      <PullQuote />
+      <Testimonials />
+      <Team />
+      <Areas />
+      <FAQSection />
+      <Booking />
+      <Footer />
+      <WhatsAppFab />
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+
+</body>
+</html>

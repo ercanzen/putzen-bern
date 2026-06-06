@@ -1,0 +1,6 @@
+{
+  "name": "Putzeb Cleaning Bern",
+  "description": "A premium cinematic landing page for Putzeb, a cleaning company in Bern, Switzerland, featuring liquid-glass aesthetics and looping videos.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://putzeb.ch/sitemap.xml
