@@ -6,6 +6,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [offerteOpen, setOfferteOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
   const { t, language, setLanguage } = useLanguage();
 
   useEffect(() => {
@@ -58,22 +59,30 @@ export function Navbar() {
             {t.nav.offerte}
           </button>
 
-          <div className="relative group">
-            <button className="flex items-center gap-1 text-xs font-medium text-[#6F6F6F] hover:text-black transition-colors uppercase px-2 py-1 rounded-md hover:bg-black/5">
+          <div className="relative">
+            <button
+              onClick={() => setLangOpen(v => !v)}
+              className="flex items-center gap-1 text-xs font-medium text-[#6F6F6F] hover:text-black transition-colors uppercase px-2 py-1 rounded-md hover:bg-black/5"
+            >
               {language}
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
-            <div className="absolute right-0 top-full mt-1 bg-white border border-black/8 rounded-xl shadow-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-              {(['de', 'en', 'fr', 'it'] as Language[]).map(lang => (
-                <button
-                  key={lang}
-                  onClick={() => setLanguage(lang)}
-                  className={`block w-full text-left px-4 py-2 text-xs uppercase font-medium transition-colors ${language === lang ? 'bg-black text-white' : 'text-[#6F6F6F] hover:bg-black/5 hover:text-black'}`}
-                >
-                  {lang}
-                </button>
-              ))}
-            </div>
+            {langOpen && (
+              <>
+                <div className="fixed inset-0 z-10" onClick={() => setLangOpen(false)} />
+                <div className="absolute right-0 top-full mt-1 bg-white border border-black/8 rounded-xl shadow-lg overflow-hidden z-20">
+                  {(['de', 'en', 'fr', 'it'] as Language[]).map(lang => (
+                    <button
+                      key={lang}
+                      onClick={() => { setLanguage(lang); setLangOpen(false); }}
+                      className={`block w-full text-left px-4 py-2 text-xs uppercase font-medium transition-colors ${language === lang ? 'bg-black text-white' : 'text-[#6F6F6F] hover:bg-black/5 hover:text-black'}`}
+                    >
+                      {lang}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           <button 
@@ -104,6 +113,17 @@ export function Navbar() {
               {item.label}
             </a>
           ))}
+          <div className="flex gap-2">
+            {(['de', 'en', 'fr', 'it'] as Language[]).map(lang => (
+              <button
+                key={lang}
+                onClick={() => { setLanguage(lang); setMobileMenuOpen(false); }}
+                className={`flex-1 py-2 text-xs uppercase font-medium rounded-full border transition-colors ${language === lang ? 'bg-black text-white border-black' : 'text-[#6F6F6F] border-black/20 hover:border-black'}`}
+              >
+                {lang}
+              </button>
+            ))}
+          </div>
           <button
             onClick={() => { setMobileMenuOpen(false); setOfferteOpen(true); }}
             className="bg-black text-white text-sm font-medium rounded-full px-6 py-3 w-full text-center"
