@@ -63,7 +63,7 @@ function HeroVideo() {
       src={VIDEO_SRC}
       muted
       playsInline
-      preload="auto"
+      preload="metadata"
       crossOrigin="anonymous"
       className="w-full h-full object-cover block opacity-0"
     />

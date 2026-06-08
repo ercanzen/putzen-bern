@@ -10,10 +10,11 @@ export default defineConfig(() => {
       react(),
       tailwindcss(),
       ViteImageOptimizer({
-        png:  { quality: 82 },
-        jpg:  { quality: 82 },
-        jpeg: { quality: 82 },
-        webp: { lossless: false, quality: 82 },
+        png:  { quality: 80 },
+        jpg:  { quality: 80 },
+        jpeg: { quality: 80 },
+        webp: { lossless: false, quality: 80 },
+        avif: { quality: 65 },
       }),
     ],
     resolve: {
