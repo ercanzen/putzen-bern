@@ -1,9 +1,9 @@
 import { FadeUp } from './shared';
 import { useLanguage } from '../i18n';
 
-import imgKitchen from '../assets/images/putzen-workers-portrait.png';
-import imgTruck from '../assets/images/putzen-truck.png';
-import imgMoving from '../assets/images/putzen-moving-boxes.png';
+import imgKitchen from '../assets/images/putzen-workers-portrait.webp';
+import imgTruck from '../assets/images/putzen-truck.webp';
+import imgMoving from '../assets/images/putzen-moving-boxes.webp';
 
 export function GallerySection() {
   const { t } = useLanguage();

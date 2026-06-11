@@ -1,5 +1,5 @@
 import { FadeUp } from './shared';
-import womanImg from '../assets/images/putzen-woman.png';
+import womanImg from '../assets/images/putzen-woman.webp';
 import { useLanguage } from '../i18n';
 
 export function CtaSection() {

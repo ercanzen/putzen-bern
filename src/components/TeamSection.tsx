@@ -1,6 +1,6 @@
 import { FadeUp } from './shared';
-import img1 from '../assets/images/team_member_1_1779367353765.png';
-import img2 from '../assets/images/team_member_2_1779367370138.png';
+import img1 from '../assets/images/team_member_1_1779367353765.webp';
+import img2 from '../assets/images/team_member_2_1779367370138.webp';
 import { useLanguage } from '../i18n';
 
 export function TeamSection() {

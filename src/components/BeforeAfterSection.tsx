@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { FadeUp } from './shared';
 import { useLanguage } from '../i18n';
-import imgBefore from '../assets/images/kitchen_before_1779366929176.png';
-import imgAfter from '../assets/images/kitchen_after_1779366951039.png';
+import imgBefore from '../assets/images/kitchen_before_1779366929176.webp';
+import imgAfter from '../assets/images/kitchen_after_1779366951039.webp';
 
 export function BeforeAfterSection() {
   const { t } = useLanguage();
