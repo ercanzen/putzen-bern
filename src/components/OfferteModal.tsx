@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SWISS_PLZ } from '../data/swissPlz';
 import { jsPDF } from 'jspdf';
+import { useLanguage } from '../i18n';
 
 interface OfferteModalProps {
   isOpen: boolean;
@@ -12,9 +13,7 @@ type Service = 'moving' | 'cleaning' | 'both' | '';
 type Payer = 'self' | 'company' | 'social' | '';
 
 const FLOORS = ['EG', '1. OG', '2. OG', '3. OG', '4. OG', '5. OG', '6. OG', '7. OG', '8. OG', '9. OG', '10. OG'];
-const CLEANING_TYPES = ['Endreinigung', 'Unterhaltsreinigung', 'Büroreinigung', 'Baureinigung', 'Fensterreinigung'];
-
-const STEPS = ['Dienstleistung', 'Objektdetails', 'Kostenträger', 'Kontakt'];
+const DE_CLEANING_TYPES = ['Endreinigung', 'Unterhaltsreinigung', 'Büroreinigung', 'Baureinigung', 'Fensterreinigung'];
 
 const inputCls = 'w-full border border-black/15 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black/40 bg-white transition-colors placeholder:text-[#aaa]';
 const selCls = 'w-full border border-black/15 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black/40 bg-white transition-colors appearance-none cursor-pointer';
@@ -31,12 +30,13 @@ function SelectArrow() {
   );
 }
 
-function AddressBlock({ label, street, onStreet, plz, onPlz, floor, onFloor, elevator, onElevator }: {
+function AddressBlock({ label, street, onStreet, plz, onPlz, floor, onFloor, elevator, onElevator, liftYes, liftNo, plzNotFound, streetPlaceholder }: {
   label: string;
   street: string; onStreet: (v: string) => void;
   plz: string; onPlz: (v: string) => void;
   floor: string; onFloor: (v: string) => void;
   elevator: boolean | null; onElevator: (v: boolean) => void;
+  liftYes: string; liftNo: string; plzNotFound: string; streetPlaceholder: string;
 }) {
   const city = plz.length === 4 ? (SWISS_PLZ[plz] ?? '') : '';
   return (
@@ -53,7 +53,7 @@ function AddressBlock({ label, street, onStreet, plz, onPlz, floor, onFloor, ele
               onChange={e => onPlz(e.target.value.replace(/\D/g, '').slice(0, 4))}
             />
             {city && <p className="text-xs text-black font-medium mt-1 pl-1">📍 {city}</p>}
-            {plz.length === 4 && !city && <p className="text-xs text-[#aaa] mt-1 pl-1">Ort nicht gefunden</p>}
+            {plz.length === 4 && !city && <p className="text-xs text-[#aaa] mt-1 pl-1">{plzNotFound}</p>}
           </div>
           <div className="relative">
             <select className={selCls} value={floor} onChange={e => onFloor(e.target.value)}>
@@ -62,17 +62,20 @@ function AddressBlock({ label, street, onStreet, plz, onPlz, floor, onFloor, ele
             <SelectArrow />
           </div>
           <div className="flex gap-2">
-            <button type="button" onClick={() => onElevator(true)} className={yesNo(elevator, true)}>Lift Ja</button>
-            <button type="button" onClick={() => onElevator(false)} className={yesNo(elevator, false)}>Nein</button>
+            <button type="button" onClick={() => onElevator(true)} className={yesNo(elevator, true)}>{liftYes}</button>
+            <button type="button" onClick={() => onElevator(false)} className={yesNo(elevator, false)}>{liftNo}</button>
           </div>
         </div>
-        <input className={inputCls} placeholder="Strasse & Hausnummer *" value={street} onChange={e => onStreet(e.target.value)} />
+        <input className={inputCls} placeholder={streetPlaceholder} value={street} onChange={e => onStreet(e.target.value)} />
       </div>
     </div>
   );
 }
 
 export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
+  const { t } = useLanguage();
+  const m = t.modal;
+
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
   const [reqError, setReqError] = useState(false);
@@ -95,7 +98,7 @@ export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
   const [cleaningPlz, setCleaningPlz] = useState('');
   const [cleaningFloor, setCleaningFloor] = useState('EG');
   const [cleaningElevator, setCleaningElevator] = useState<boolean | null>(null);
-  const [cleaningType, setCleaningType] = useState('Endreinigung');
+  const [cleaningTypeIdx, setCleaningTypeIdx] = useState(0);
   // Step 2 – common
   const [date, setDate] = useState('');
   const [timeSlot, setTimeSlot] = useState('');
@@ -116,7 +119,7 @@ export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
     setFromStreet(''); setFromPlz(''); setFromFloor('EG'); setFromElevator(null);
     setToStreet(''); setToPlz(''); setToFloor('EG'); setToElevator(null); setSpecialItems('');
     setCleaningAddress(''); setCleaningPlz(''); setCleaningFloor('EG'); setCleaningElevator(null);
-    setCleaningType('Endreinigung'); setDate(''); setTimeSlot(''); setRooms(''); setArea('');
+    setCleaningTypeIdx(0); setDate(''); setTimeSlot(''); setRooms(''); setArea('');
     setPayer(''); setCompanyName('');
     setFirstName(''); setLastName(''); setPhone(''); setEmail(''); setRemarks('');
   };
@@ -185,7 +188,7 @@ export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
         payload['Reinigungs-Adresse'] = `${cleaningAddress}, ${cleaningPlz}`;
         payload['Etage'] = cleaningFloor;
         payload['Lift'] = cleaningElevator ? 'Ja' : 'Nein';
-        payload['Reinigungsart'] = cleaningType;
+        payload['Reinigungsart'] = DE_CLEANING_TYPES[cleaningTypeIdx];
       }
       if (remarks) payload['Bemerkungen'] = remarks;
 
@@ -286,7 +289,7 @@ export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
       line('Adresse', `${cleaningAddress}, ${cleaningPlz}`);
       line('Etage', cleaningFloor);
       line('Lift', cleaningElevator ? 'Ja' : 'Nein');
-      line('Art', cleaningType);
+      line('Art', DE_CLEANING_TYPES[cleaningTypeIdx]);
     }
 
     if (remarks) {
@@ -338,7 +341,7 @@ export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
               'Reinigungs-Adresse': `${cleaningAddress}, ${cleaningPlz}`,
               'Etage': cleaningFloor,
               'Lift': cleaningElevator ? 'Ja' : 'Nein',
-              'Reinigungsart': cleaningType,
+              'Reinigungsart': DE_CLEANING_TYPES[cleaningTypeIdx],
             }),
             'Datum': date,
             ...(timeSlot && { 'Uhrzeit': timeSlot }),
@@ -384,7 +387,7 @@ export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
             <div className="flex items-center justify-between px-6 sm:px-8 pt-6 sm:pt-8 pb-5 border-b border-black/8">
               <div>
                 <p className="text-[11px] font-medium text-[#6F6F6F] uppercase tracking-widest mb-1">Putzen Bern</p>
-                <h2 className="font-serif text-xl sm:text-2xl text-black">Online Offerte</h2>
+                <h2 className="font-serif text-xl sm:text-2xl text-black">{m.title}</h2>
               </div>
               <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/8 transition-colors text-[#6F6F6F] hover:text-black">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
@@ -394,7 +397,7 @@ export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
             {/* Step progress */}
             {!submitted && (
               <div className="flex items-center px-6 sm:px-8 py-3 border-b border-black/8 bg-white/60 gap-1">
-                {STEPS.map((label, i) => {
+                {m.steps.map((label, i) => {
                   const n = i + 1;
                   const done = n < step;
                   const active = n === step;
@@ -408,7 +411,7 @@ export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
                         </div>
                         <span className={`text-[10px] sm:text-xs font-medium truncate hidden sm:block ${active ? 'text-black' : done ? 'text-black/50' : 'text-[#bbb]'}`}>{label}</span>
                       </div>
-                      {i < STEPS.length - 1 && (
+                      {i < m.steps.length - 1 && (
                         <div className={`flex-1 h-px mx-2 flex-shrink-0 ${done ? 'bg-black' : 'bg-black/10'}`} />
                       )}
                     </div>
@@ -424,21 +427,21 @@ export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
                   <div className="w-14 h-14 bg-black rounded-full flex items-center justify-center mb-5">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                   </div>
-                  <h3 className="font-serif text-2xl text-black mb-3">Vielen Dank!</h3>
-                  <p className="text-[#6F6F6F] text-sm leading-relaxed max-w-xs">Wir haben Ihre Anfrage erhalten und melden uns in Kürze bei Ihnen.</p>
-                  <button onClick={onClose} className="mt-8 bg-black text-white rounded-full px-8 py-3 text-sm font-medium hover:scale-105 transition-transform">Schliessen</button>
+                  <h3 className="font-serif text-2xl text-black mb-3">{m.success_title}</h3>
+                  <p className="text-[#6F6F6F] text-sm leading-relaxed max-w-xs">{m.success_msg}</p>
+                  <button onClick={onClose} className="mt-8 bg-black text-white rounded-full px-8 py-3 text-sm font-medium hover:scale-105 transition-transform">{m.close}</button>
                 </div>
               ) : (
                 <AnimatePresence mode="wait">
                   {/* ── Step 1 ── */}
                   {step === 1 && (
                     <motion.div key="s1" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.18 }}>
-                      <p className="text-sm text-[#6F6F6F] mb-5">Welche Dienstleistung benötigen Sie?</p>
+                      <p className="text-sm text-[#6F6F6F] mb-5">{m.step1_q}</p>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         {([
-                          { val: 'moving' as Service, label: 'Umzug', icon: '🚚', sub: 'Ich möchte umziehen' },
-                          { val: 'cleaning' as Service, label: 'Reinigung', icon: '🧹', sub: 'Ich brauche eine Reinigung' },
-                          { val: 'both' as Service, label: 'Umzug & Reinigung', icon: '✨', sub: 'Ich brauche beides' },
+                          { val: 'moving' as Service, label: m.svc_moving, icon: '🚚', sub: m.svc_moving_sub },
+                          { val: 'cleaning' as Service, label: m.svc_cleaning, icon: '🧹', sub: m.svc_cleaning_sub },
+                          { val: 'both' as Service, label: m.svc_both, icon: '✨', sub: m.svc_both_sub },
                         ]).map(({ val, label, icon, sub }) => (
                           <button key={val} type="button" onClick={() => setService(val)} className={svcBtn(val)}>
                             <span className="text-2xl mb-3 block">{icon}</span>
@@ -457,25 +460,29 @@ export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
                         {isMoving && (
                           <>
                             <AddressBlock
-                              label="Von – Abgangsort"
+                              label={m.addr_from}
                               street={fromStreet} onStreet={setFromStreet}
                               plz={fromPlz} onPlz={setFromPlz}
                               floor={fromFloor} onFloor={setFromFloor}
                               elevator={fromElevator} onElevator={setFromElevator}
+                              liftYes={m.lift_yes} liftNo={m.lift_no}
+                              plzNotFound={m.plz_not_found} streetPlaceholder={m.street_placeholder}
                             />
                             <AddressBlock
-                              label="Nach – Zielort"
+                              label={m.addr_to}
                               street={toStreet} onStreet={setToStreet}
                               plz={toPlz} onPlz={setToPlz}
                               floor={toFloor} onFloor={setToFloor}
                               elevator={toElevator} onElevator={setToElevator}
+                              liftYes={m.lift_yes} liftNo={m.lift_no}
+                              plzNotFound={m.plz_not_found} streetPlaceholder={m.street_placeholder}
                             />
                           </>
                         )}
 
                         {isCleaning && (
                           <div>
-                            <p className="text-[11px] font-semibold uppercase tracking-widest text-[#6F6F6F] mb-2">Reinigungsobjekt</p>
+                            <p className="text-[11px] font-semibold uppercase tracking-widest text-[#6F6F6F] mb-2">{m.addr_cleaning}</p>
                             <div className="space-y-3 p-4 bg-white rounded-2xl border border-black/8">
                               <div className="grid grid-cols-3 gap-3">
                                 <div>
@@ -490,7 +497,7 @@ export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
                                     <p className="text-xs text-black font-medium mt-1 pl-1">📍 {SWISS_PLZ[cleaningPlz]}</p>
                                   )}
                                   {cleaningPlz.length === 4 && !SWISS_PLZ[cleaningPlz] && (
-                                    <p className="text-xs text-[#aaa] mt-1 pl-1">Ort nicht gefunden</p>
+                                    <p className="text-xs text-[#aaa] mt-1 pl-1">{m.plz_not_found}</p>
                                   )}
                                 </div>
                                 <div className="relative">
@@ -500,14 +507,14 @@ export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
                                   <SelectArrow />
                                 </div>
                                 <div className="flex gap-2">
-                                  <button type="button" onClick={() => setCleaningElevator(true)} className={yesNo(cleaningElevator, true)}>Lift Ja</button>
-                                  <button type="button" onClick={() => setCleaningElevator(false)} className={yesNo(cleaningElevator, false)}>Nein</button>
+                                  <button type="button" onClick={() => setCleaningElevator(true)} className={yesNo(cleaningElevator, true)}>{m.lift_yes}</button>
+                                  <button type="button" onClick={() => setCleaningElevator(false)} className={yesNo(cleaningElevator, false)}>{m.lift_no}</button>
                                 </div>
                               </div>
-                              <input className={inputCls} placeholder="Strasse & Hausnummer *" value={cleaningAddress} onChange={e => setCleaningAddress(e.target.value)} />
+                              <input className={inputCls} placeholder={m.street_placeholder} value={cleaningAddress} onChange={e => setCleaningAddress(e.target.value)} />
                               <div className="relative">
-                                <select className={selCls} value={cleaningType} onChange={e => setCleaningType(e.target.value)}>
-                                  {CLEANING_TYPES.map(ct => <option key={ct}>{ct}</option>)}
+                                <select className={selCls} value={cleaningTypeIdx} onChange={e => setCleaningTypeIdx(Number(e.target.value))}>
+                                  {m.cleaning_types.map((ct, i) => <option key={i} value={i}>{ct}</option>)}
                                 </select>
                                 <SelectArrow />
                               </div>
@@ -515,32 +522,32 @@ export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
                           </div>
                         )}
 
-                        {/* Datum + Uhrzeit */}
+                        {/* Date + Time */}
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <label className="text-[11px] text-[#6F6F6F] mb-1 block">Datum *</label>
+                            <label className="text-[11px] text-[#6F6F6F] mb-1 block">{m.date_label}</label>
                             <input type="date" className={inputCls} value={date} onChange={e => setDate(e.target.value)} />
                           </div>
                           <div>
-                            <label className="text-[11px] text-[#6F6F6F] mb-1 block">Bevorzugte Uhrzeit</label>
+                            <label className="text-[11px] text-[#6F6F6F] mb-1 block">{m.time_label}</label>
                             <input type="time" className={inputCls} value={timeSlot} onChange={e => setTimeSlot(e.target.value)} />
                           </div>
                         </div>
 
-                        {/* Zimmer + Fläche */}
+                        {/* Rooms + Area */}
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <label className="text-[11px] text-[#6F6F6F] mb-1 block">Zimmer *</label>
+                            <label className="text-[11px] text-[#6F6F6F] mb-1 block">{m.rooms_label}</label>
                             <input type="number" min="1" max="20" className={inputCls} placeholder="3" value={rooms} onChange={e => setRooms(e.target.value)} />
                           </div>
                           <div>
-                            <label className="text-[11px] text-[#6F6F6F] mb-1 block">Fläche (m²) *</label>
+                            <label className="text-[11px] text-[#6F6F6F] mb-1 block">{m.area_label}</label>
                             <input type="number" min="10" className={inputCls} placeholder="75" value={area} onChange={e => setArea(e.target.value)} />
                           </div>
                         </div>
 
                         {isMoving && (
-                          <input className={inputCls} placeholder="Besondere Gegenstände (Piano, Safe, etc.) – optional" value={specialItems} onChange={e => setSpecialItems(e.target.value)} />
+                          <input className={inputCls} placeholder={m.special_placeholder} value={specialItems} onChange={e => setSpecialItems(e.target.value)} />
                         )}
                       </div>
                     </motion.div>
@@ -549,12 +556,12 @@ export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
                   {/* ── Step 3 ── */}
                   {step === 3 && (
                     <motion.div key="s3" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.18 }}>
-                      <p className="text-sm text-[#6F6F6F] mb-5">Wer trägt die Kosten?</p>
+                      <p className="text-sm text-[#6F6F6F] mb-5">{m.step3_q}</p>
                       <div className="flex gap-3 mb-5">
                         {([
-                          { val: 'self' as Payer, label: 'Selbst (Privat)' },
-                          { val: 'company' as Payer, label: 'Firma' },
-                          { val: 'social' as Payer, label: 'Sozialamt' },
+                          { val: 'self' as Payer, label: m.payer_self },
+                          { val: 'company' as Payer, label: m.payer_company },
+                          { val: 'social' as Payer, label: m.payer_social },
                         ]).map(({ val, label }) => (
                           <button key={val} type="button" onClick={() => setPayer(val)} className={payBtn(val)}>{label}</button>
                         ))}
@@ -562,13 +569,13 @@ export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
                       <AnimatePresence>
                         {payer === 'company' && (
                           <motion.div key="company" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.15 }}>
-                            <input className={inputCls} placeholder="Firmenname *" value={companyName} onChange={e => setCompanyName(e.target.value)} />
+                            <input className={inputCls} placeholder={m.company_placeholder} value={companyName} onChange={e => setCompanyName(e.target.value)} />
                           </motion.div>
                         )}
                         {payer === 'social' && (
                           <motion.div key="social" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.15 }} className="p-4 bg-amber-50 border border-amber-200 rounded-2xl">
                             <p className="text-sm text-amber-800 leading-relaxed">
-                              <strong>Hinweis:</strong> Bitte halten Sie Ihre <strong>Fallnummer</strong> für unsere Rückmeldung bereit. Wir benötigen diese zur Verarbeitung Ihres Auftrags.
+                              <strong>{m.social_note_bold}</strong> {m.social_note}
                             </p>
                           </motion.div>
                         )}
@@ -581,14 +588,14 @@ export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
                     <motion.div key="s4" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.18 }}>
                       <div className="space-y-3">
                         <div className="grid grid-cols-2 gap-3">
-                          <input className={inputCls} placeholder="Vorname *" value={firstName} onChange={e => setFirstName(e.target.value)} />
-                          <input className={inputCls} placeholder="Nachname *" value={lastName} onChange={e => setLastName(e.target.value)} />
+                          <input className={inputCls} placeholder={m.firstname} value={firstName} onChange={e => setFirstName(e.target.value)} />
+                          <input className={inputCls} placeholder={m.lastname} value={lastName} onChange={e => setLastName(e.target.value)} />
                         </div>
-                        <input type="tel" className={inputCls} placeholder="Telefon *" value={phone} onChange={e => setPhone(e.target.value)} />
-                        <input type="email" className={inputCls} placeholder="E-Mail *" value={email} onChange={e => setEmail(e.target.value)} />
-                        <textarea className={`${inputCls} resize-none`} rows={3} placeholder="Bemerkungen (optional)" value={remarks} onChange={e => setRemarks(e.target.value)} />
+                        <input type="tel" className={inputCls} placeholder={m.phone} value={phone} onChange={e => setPhone(e.target.value)} />
+                        <input type="email" className={inputCls} placeholder={m.email} value={email} onChange={e => setEmail(e.target.value)} />
+                        <textarea className={`${inputCls} resize-none`} rows={3} placeholder={m.remarks} value={remarks} onChange={e => setRemarks(e.target.value)} />
                         {reqError && (
-                          <p className="text-red-500 text-sm">Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.</p>
+                          <p className="text-red-500 text-sm">{m.error}</p>
                         )}
                       </div>
                     </motion.div>
@@ -607,7 +614,7 @@ export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
                   className="text-sm font-medium text-[#6F6F6F] hover:text-black transition-colors disabled:opacity-0 disabled:pointer-events-none flex items-center gap-1.5"
                 >
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-                  Zurück
+                  {m.back}
                 </button>
 
                 {step < 4 ? (
@@ -617,7 +624,7 @@ export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
                     disabled={!canNext}
                     className="bg-black text-white rounded-full px-7 py-2.5 text-sm font-medium hover:scale-105 transition-all disabled:opacity-35 disabled:scale-100 flex items-center gap-1.5"
                   >
-                    Weiter
+                    {m.next}
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
                   </button>
                 ) : (
@@ -627,7 +634,7 @@ export function OfferteModal({ isOpen, onClose }: OfferteModalProps) {
                     disabled={!step4Valid || loading}
                     className="bg-black text-white rounded-full px-7 py-2.5 text-sm font-medium hover:scale-105 transition-all disabled:opacity-35 disabled:scale-100"
                   >
-                    {loading ? 'Wird gesendet…' : 'Offerte anfordern'}
+                    {loading ? m.sending : m.submit}
                   </button>
                 )}
               </div>
